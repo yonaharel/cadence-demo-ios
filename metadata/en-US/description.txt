@@ -1,0 +1,3 @@
+Cadence Demo is a minimal app used to exercise Cadence, an open release-management tool for iOS and Android.
+
+Tap the button to count taps. The screen shows the app's version and build number, so each release Cadence ships is easy to tell apart.

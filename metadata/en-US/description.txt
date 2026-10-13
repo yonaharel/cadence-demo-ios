@@ -1,3 +1,7 @@
-Cadence Demo is a minimal app used to exercise Cadence, an open release-management tool for iOS and Android.
+A clean, fast guitar tuner. Play a string and the tuner shows the note, how many cents sharp or flat it is, and which way to turn the peg.
 
-Tap the button to count taps. The screen shows the app's version and build number, so each release Cadence ships is easy to tell apart.
+• Standard tuning: E A D G B E, with the string you're tuning highlighted
+• A steady needle with a clear in-tune zone
+• Works offline; the microphone is only used while the tuner is open, and audio never leaves your iPhone
+
+Shipped with Cadence, an open release-management tool for iOS and Android.

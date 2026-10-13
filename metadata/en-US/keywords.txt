@@ -1,1 +1,1 @@
-release,demo,counter,cadence
+guitar,tuner,tune,chromatic,pitch,strings,acoustic,electric,bass,cadence

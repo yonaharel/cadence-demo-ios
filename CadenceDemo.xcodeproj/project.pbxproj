@@ -7,12 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2520EAD2973B257E71693CD7 /* Tuner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A59DDD1149FE74464950034 /* Tuner.swift */; };
+		2CE3F640361C5DBC78C68EDA /* Pitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FA7EEBE4AF406AFEEB5C4F3 /* Pitch.swift */; };
 		4A80E15C1D973DBB191AEC43 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7069ADB76E591A8F32CE0CDA /* Assets.xcassets */; };
 		8F1FF67D1BBDEF35983E3C8D /* CadenceDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07141D936E8882651E679A62 /* CadenceDemoApp.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		07141D936E8882651E679A62 /* CadenceDemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CadenceDemoApp.swift; sourceTree = "<group>"; };
+		0A59DDD1149FE74464950034 /* Tuner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tuner.swift; sourceTree = "<group>"; };
+		0FA7EEBE4AF406AFEEB5C4F3 /* Pitch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pitch.swift; sourceTree = "<group>"; };
 		7069ADB76E591A8F32CE0CDA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7F4C3001DA221754E8F2E262 /* Version.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
 		A98417E86C92405F20A659B9 /* CadenceDemo.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = CadenceDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -33,6 +37,8 @@
 			children = (
 				7069ADB76E591A8F32CE0CDA /* Assets.xcassets */,
 				07141D936E8882651E679A62 /* CadenceDemoApp.swift */,
+				0FA7EEBE4AF406AFEEB5C4F3 /* Pitch.swift */,
+				0A59DDD1149FE74464950034 /* Tuner.swift */,
 			);
 			path = CadenceDemo;
 			sourceTree = "<group>";
@@ -125,6 +131,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				8F1FF67D1BBDEF35983E3C8D /* CadenceDemoApp.swift in Sources */,
+				2CE3F640361C5DBC78C68EDA /* Pitch.swift in Sources */,
+				2520EAD2973B257E71693CD7 /* Tuner.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -139,8 +147,9 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = T783FPJSM6;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Cadence Demo";
+				INFOPLIST_KEY_CFBundleDisplayName = Tuner;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Tuner listens to your guitar to show which note you are playing. Audio is analysed on your iPhone and never recorded or sent anywhere.";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -226,8 +235,9 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = T783FPJSM6;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Cadence Demo";
+				INFOPLIST_KEY_CFBundleDisplayName = Tuner;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Tuner listens to your guitar to show which note you are playing. Audio is analysed on your iPhone and never recorded or sent anywhere.";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (

@@ -17,7 +17,8 @@ targets:
         DEVELOPMENT_TEAM: T783FPJSM6
         CODE_SIGN_STYLE: Automatic
         GENERATE_INFOPLIST_FILE: YES
-        INFOPLIST_KEY_CFBundleDisplayName: Cadence Demo
+        INFOPLIST_KEY_CFBundleDisplayName: Tuner
+        INFOPLIST_KEY_NSMicrophoneUsageDescription: "Tuner listens to your guitar to show which note you are playing. Audio is analysed on your iPhone and never recorded or sent anywhere."
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
         INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: NO

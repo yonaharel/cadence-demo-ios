@@ -4,8 +4,9 @@
 #
 #   ASC_KEY_PATH=~/.appstoreconnect/private_keys/AuthKey_XXXX.p8 ASC_KEY_ID=XXXX ASC_ISSUER_ID=... \
 #   CADENCE_TOKEN=... scripts/ci.sh
+# Without CADENCE_TOKEN nothing is reported: on GitHub Actions, Cadence follows the workflow run instead.
 set -euo pipefail
-: "${ASC_KEY_PATH:?}" "${ASC_KEY_ID:?}" "${ASC_ISSUER_ID:?}" "${CADENCE_TOKEN:?}"
+: "${ASC_KEY_PATH:?}" "${ASC_KEY_ID:?}" "${ASC_ISSUER_ID:?}"
 CADENCE_URL=${CADENCE_URL:-http://127.0.0.1:4100}
 CADENCE_APP=${CADENCE_APP:-ios}
 cd "$(dirname "$0")/.."
@@ -17,6 +18,7 @@ BRANCH=$(git rev-parse --abbrev-ref HEAD)
 OUT=$(mktemp -d)
 
 report() {
+  [ -n "${CADENCE_TOKEN:-}" ] || return 0
   curl -fsS -X POST "$CADENCE_URL/api/apps/$CADENCE_APP/builds" \
     -H "Authorization: Bearer $CADENCE_TOKEN" -H 'content-type: application/json' \
     -d "{\"version\":\"$VERSION\",\"buildNumber\":\"$BUILD\",\"status\":\"$1\",\"commitSha\":\"$SHA\",\"branch\":\"$BRANCH\"}" >/dev/null

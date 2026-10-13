@@ -1,0 +1,36 @@
+# Started by Cadence (Settings → Build workflow). Cadence passes the version and a build number,
+# then follows this run by the build number in its name.
+name: Build
+run-name: Build ${{ inputs.version }} (${{ inputs.build_number }})
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Marketing version the branch should be at
+        required: true
+      build_number:
+        description: Build number (CFBundleVersion); must grow with every upload
+        required: true
+
+jobs:
+  build:
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+      - run: xcodebuild -version
+      - name: Check the branch is at the version Cadence expects
+        env:
+          VERSION: ${{ inputs.version }}
+        run: test "$(sed -n 's/^MARKETING_VERSION = //p' Config/Version.xcconfig)" = "$VERSION"
+      - name: Archive and upload to App Store Connect
+        env:
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          BUILD_NUMBER: ${{ inputs.build_number }}
+        run: |
+          export ASC_KEY_PATH="$RUNNER_TEMP/AuthKey_$ASC_KEY_ID.p8"
+          printf '%s\n' "$ASC_KEY_P8" > "$ASC_KEY_PATH"
+          scripts/ci.sh

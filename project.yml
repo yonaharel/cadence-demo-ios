@@ -1,4 +1,4 @@
-name: CadenceDemo
+name: Tuner
 options:
   bundleIdPrefix: com.yonaharel
   deploymentTarget:
@@ -7,10 +7,10 @@ configFiles:
   Debug: Config/Version.xcconfig
   Release: Config/Version.xcconfig
 targets:
-  CadenceDemo:
+  Tuner:
     type: application
     platform: iOS
-    sources: [CadenceDemo]
+    sources: [Tuner]
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.yonaharel.cadencedemo

@@ -7,54 +7,54 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2520EAD2973B257E71693CD7 /* Tuner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A59DDD1149FE74464950034 /* Tuner.swift */; };
-		2CE3F640361C5DBC78C68EDA /* Pitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FA7EEBE4AF406AFEEB5C4F3 /* Pitch.swift */; };
-		4A80E15C1D973DBB191AEC43 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7069ADB76E591A8F32CE0CDA /* Assets.xcassets */; };
-		8F1FF67D1BBDEF35983E3C8D /* CadenceDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07141D936E8882651E679A62 /* CadenceDemoApp.swift */; };
+		399E7C9EE38C19AAD9518183 /* Tuner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7008CB354617DFB7EC138EA /* Tuner.swift */; };
+		D3F5E05A12265A9F6B492D35 /* Pitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BC4F30F89DA9DD3C180E36 /* Pitch.swift */; };
+		D9FACAB45D0EE5408F9932E6 /* TunerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D957FD4530387BB10373FFC8 /* TunerApp.swift */; };
+		DC9DD0CC314BE54737608192 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97EC35051D44F87E0B052EB6 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		07141D936E8882651E679A62 /* CadenceDemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CadenceDemoApp.swift; sourceTree = "<group>"; };
-		0A59DDD1149FE74464950034 /* Tuner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tuner.swift; sourceTree = "<group>"; };
-		0FA7EEBE4AF406AFEEB5C4F3 /* Pitch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pitch.swift; sourceTree = "<group>"; };
-		7069ADB76E591A8F32CE0CDA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		7F4C3001DA221754E8F2E262 /* Version.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
-		A98417E86C92405F20A659B9 /* CadenceDemo.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = CadenceDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		82BC4F30F89DA9DD3C180E36 /* Pitch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pitch.swift; sourceTree = "<group>"; };
+		97EC35051D44F87E0B052EB6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		C7008CB354617DFB7EC138EA /* Tuner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tuner.swift; sourceTree = "<group>"; };
+		CB8D4A34D444B416B0F0FB2F /* Version.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
+		D957FD4530387BB10373FFC8 /* TunerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TunerApp.swift; sourceTree = "<group>"; };
+		FD414E3FDE1B48E6636CC07D /* Tuner.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Tuner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
-		02E76C6D65238EF2A8C7A457 = {
+		3601859247CF76A52E30E95A /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				3361E0F0C36FDD94D3E25B7B /* CadenceDemo */,
-				E944AD23F3DC1B0F8806A637 /* Config */,
-				BD2812BF8EB3A4F8871EB2A7 /* Products */,
-			);
-			sourceTree = "<group>";
-		};
-		3361E0F0C36FDD94D3E25B7B /* CadenceDemo */ = {
-			isa = PBXGroup;
-			children = (
-				7069ADB76E591A8F32CE0CDA /* Assets.xcassets */,
-				07141D936E8882651E679A62 /* CadenceDemoApp.swift */,
-				0FA7EEBE4AF406AFEEB5C4F3 /* Pitch.swift */,
-				0A59DDD1149FE74464950034 /* Tuner.swift */,
-			);
-			path = CadenceDemo;
-			sourceTree = "<group>";
-		};
-		BD2812BF8EB3A4F8871EB2A7 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				A98417E86C92405F20A659B9 /* CadenceDemo.app */,
+				FD414E3FDE1B48E6636CC07D /* Tuner.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		E944AD23F3DC1B0F8806A637 /* Config */ = {
+		5E21A3E0FCAED9605AF18AA9 = {
 			isa = PBXGroup;
 			children = (
-				7F4C3001DA221754E8F2E262 /* Version.xcconfig */,
+				A0BFBC6989E549E9BAC5EF89 /* Config */,
+				5E915968260877E3C7B552D6 /* Tuner */,
+				3601859247CF76A52E30E95A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		5E915968260877E3C7B552D6 /* Tuner */ = {
+			isa = PBXGroup;
+			children = (
+				97EC35051D44F87E0B052EB6 /* Assets.xcassets */,
+				82BC4F30F89DA9DD3C180E36 /* Pitch.swift */,
+				C7008CB354617DFB7EC138EA /* Tuner.swift */,
+				D957FD4530387BB10373FFC8 /* TunerApp.swift */,
+			);
+			path = Tuner;
+			sourceTree = "<group>";
+		};
+		A0BFBC6989E549E9BAC5EF89 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				CB8D4A34D444B416B0F0FB2F /* Version.xcconfig */,
 			);
 			path = Config;
 			sourceTree = "<group>";
@@ -62,110 +62,86 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		9A2AE263AA36C67D0935E2B7 /* CadenceDemo */ = {
+		164B8DD1DA5477ED2944F943 /* Tuner */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9F86402436A55D5B88DD7EDA /* Build configuration list for PBXNativeTarget "CadenceDemo" */;
+			buildConfigurationList = 1E14D891503F7DD98744A1BE /* Build configuration list for PBXNativeTarget "Tuner" */;
 			buildPhases = (
-				C7FD0AC79585A3FDC346ECCF /* Sources */,
-				06023C17F9EE1FD33F69BAC8 /* Resources */,
+				F8F928AC0CB6F5F5C3552B27 /* Sources */,
+				4C198FD8C5371D5CD3504D1F /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = CadenceDemo;
+			name = Tuner;
 			packageProductDependencies = (
 			);
-			productName = CadenceDemo;
-			productReference = A98417E86C92405F20A659B9 /* CadenceDemo.app */;
+			productName = Tuner;
+			productReference = FD414E3FDE1B48E6636CC07D /* Tuner.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		1E3A266CEE5D5736974B41B3 /* Project object */ = {
+		206B861CF0CD8D48309338DC /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
-					9A2AE263AA36C67D0935E2B7 = {
+					164B8DD1DA5477ED2944F943 = {
 						DevelopmentTeam = T783FPJSM6;
 						ProvisioningStyle = Automatic;
 					};
 				};
 			};
-			buildConfigurationList = 30E22F9CB8BE4B3B8AE33BBF /* Build configuration list for PBXProject "CadenceDemo" */;
+			buildConfigurationList = FF471A9999CC521BEAACF738 /* Build configuration list for PBXProject "Tuner" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				Base,
 				en,
 			);
-			mainGroup = 02E76C6D65238EF2A8C7A457;
+			mainGroup = 5E21A3E0FCAED9605AF18AA9;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = BD2812BF8EB3A4F8871EB2A7 /* Products */;
+			productRefGroup = 3601859247CF76A52E30E95A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				9A2AE263AA36C67D0935E2B7 /* CadenceDemo */,
+				164B8DD1DA5477ED2944F943 /* Tuner */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		06023C17F9EE1FD33F69BAC8 /* Resources */ = {
+		4C198FD8C5371D5CD3504D1F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4A80E15C1D973DBB191AEC43 /* Assets.xcassets in Resources */,
+				DC9DD0CC314BE54737608192 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		C7FD0AC79585A3FDC346ECCF /* Sources */ = {
+		F8F928AC0CB6F5F5C3552B27 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8F1FF67D1BBDEF35983E3C8D /* CadenceDemoApp.swift in Sources */,
-				2CE3F640361C5DBC78C68EDA /* Pitch.swift in Sources */,
-				2520EAD2973B257E71693CD7 /* Tuner.swift in Sources */,
+				D3F5E05A12265A9F6B492D35 /* Pitch.swift in Sources */,
+				399E7C9EE38C19AAD9518183 /* Tuner.swift in Sources */,
+				D9FACAB45D0EE5408F9932E6 /* TunerApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		16B3AF445371EB68704CD454 /* Release */ = {
+		309EC8276C9537203D5AF12B /* Debug */ = {
 			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = T783FPJSM6;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = Tuner;
-				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Tuner listens to your guitar to show which note you are playing. Audio is analysed on your iPhone and never recorded or sent anywhere.";
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.yonaharel.cadencedemo;
-				SDKROOT = iphoneos;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-			};
-			name = Release;
-		};
-		2A2718FB1ED8421F2174EB25 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7F4C3001DA221754E8F2E262 /* Version.xcconfig */;
+			baseConfigurationReference = CB8D4A34D444B416B0F0FB2F /* Version.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -227,33 +203,9 @@
 			};
 			name = Debug;
 		};
-		617C2F0E9BFB7FF6FC3FF715 /* Debug */ = {
+		96A49370F180F17778E010C8 /* Release */ = {
 			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = T783FPJSM6;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = Tuner;
-				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Tuner listens to your guitar to show which note you are playing. Audio is analysed on your iPhone and never recorded or sent anywhere.";
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.yonaharel.cadencedemo;
-				SDKROOT = iphoneos;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-			};
-			name = Debug;
-		};
-		C1C5341088AABD38B9DC2D88 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7F4C3001DA221754E8F2E262 /* Version.xcconfig */;
+			baseConfigurationReference = CB8D4A34D444B416B0F0FB2F /* Version.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -308,28 +260,76 @@
 			};
 			name = Release;
 		};
+		9701B084141E4A07DB5239BE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = T783FPJSM6;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Tuner;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Tuner listens to your guitar to show which note you are playing. Audio is analysed on your iPhone and never recorded or sent anywhere.";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.yonaharel.cadencedemo;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		DC21856005C059F8A1C79792 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = T783FPJSM6;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Tuner;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Tuner listens to your guitar to show which note you are playing. Audio is analysed on your iPhone and never recorded or sent anywhere.";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.yonaharel.cadencedemo;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		30E22F9CB8BE4B3B8AE33BBF /* Build configuration list for PBXProject "CadenceDemo" */ = {
+		1E14D891503F7DD98744A1BE /* Build configuration list for PBXNativeTarget "Tuner" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				2A2718FB1ED8421F2174EB25 /* Debug */,
-				C1C5341088AABD38B9DC2D88 /* Release */,
+				DC21856005C059F8A1C79792 /* Debug */,
+				9701B084141E4A07DB5239BE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		9F86402436A55D5B88DD7EDA /* Build configuration list for PBXNativeTarget "CadenceDemo" */ = {
+		FF471A9999CC521BEAACF738 /* Build configuration list for PBXProject "Tuner" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				617C2F0E9BFB7FF6FC3FF715 /* Debug */,
-				16B3AF445371EB68704CD454 /* Release */,
+				309EC8276C9537203D5AF12B /* Debug */,
+				96A49370F180F17778E010C8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 1E3A266CEE5D5736974B41B3 /* Project object */;
+	rootObject = 206B861CF0CD8D48309338DC /* Project object */;
 }

@@ -1,1 +1,1 @@
-Cadence Demo is now a guitar tuner: play a string to see the note, how far off it is, and which way to tune.
+Twang is a guitar tuner: play a string to see the note, how far off it is, and which way to tune.

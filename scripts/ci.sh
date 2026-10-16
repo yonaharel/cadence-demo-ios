@@ -28,10 +28,10 @@ report running
 echo "Building $VERSION ($BUILD) from $BRANCH @ ${SHA:0:7}"
 
 AUTH=(-allowProvisioningUpdates -authenticationKeyPath "$ASC_KEY_PATH" -authenticationKeyID "$ASC_KEY_ID" -authenticationKeyIssuerID "$ASC_ISSUER_ID")
-xcodebuild archive -project CadenceDemo.xcodeproj -scheme CadenceDemo -configuration Release \
-  -destination 'generic/platform=iOS' -archivePath "$OUT/CadenceDemo.xcarchive" \
+xcodebuild archive -project Tuner.xcodeproj -scheme Tuner -configuration Release \
+  -destination 'generic/platform=iOS' -archivePath "$OUT/Tuner.xcarchive" \
   CURRENT_PROJECT_VERSION="$BUILD" "${AUTH[@]}" -quiet
-xcodebuild -exportArchive -archivePath "$OUT/CadenceDemo.xcarchive" \
+xcodebuild -exportArchive -archivePath "$OUT/Tuner.xcarchive" \
   -exportOptionsPlist scripts/ExportOptions.plist -exportPath "$OUT/export" "${AUTH[@]}" -quiet
 
 report success

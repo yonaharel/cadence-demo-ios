@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct CadenceDemoApp: App {
+struct TunerApp: App {
     var body: some Scene {
         WindowGroup { ContentView() }
     }

@@ -9,14 +9,22 @@ struct TunerApp: App {
 
 struct ContentView: View {
     @State private var tuner = Tuner()
+    @AppStorage("tuning") private var tuning = Tuning.standard
     @Environment(\.scenePhase) private var phase
     private let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"
     private let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "?"
 
     var body: some View {
         VStack(spacing: 0) {
-            Strings(active: tuner.hearing ? tuner.note?.nearestString : nil)
-                .padding(.top, 24)
+            Picker("Tuning", selection: $tuning) {
+                ForEach(Tuning.allCases) { t in
+                    Text(t.name).tag(t)
+                }
+            }
+            .pickerStyle(.menu)
+            .padding(.top, 8)
+            Strings(tuning: tuning, active: tuner.hearing ? tuner.note?.nearestString(in: tuning) : nil)
+                .padding(.top, 12)
             Spacer()
             switch tuner.state {
             case .denied:
@@ -42,13 +50,14 @@ struct ContentView: View {
     }
 }
 
-/// The six strings in standard tuning; the one being tuned is filled.
+/// The six strings of the tuning; the one being tuned is filled.
 struct Strings: View {
+    let tuning: Tuning
     let active: Int?
 
     var body: some View {
         HStack(spacing: 12) {
-            ForEach(Note.guitar, id: \.self) { midi in
+            ForEach(tuning.strings, id: \.self) { midi in
                 let note = Note(midi: midi)
                 Text("\(note.name)\(Text("\(note.octave)").font(.caption2))")
                     .font(.headline)
@@ -59,6 +68,7 @@ struct Strings: View {
             }
         }
         .animation(.easeOut(duration: 0.15), value: active)
+        .animation(.easeOut(duration: 0.15), value: tuning)
     }
 }
 

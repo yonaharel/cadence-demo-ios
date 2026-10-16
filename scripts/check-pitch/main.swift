@@ -11,7 +11,7 @@ func tone(_ f: Double, count: Int = 4096) -> [Float] {
     }
 }
 
-for midi in Note.guitar {
+for midi in Set(Tuning.allCases.flatMap(\.strings)).sorted() {
     let f = Note(midi: midi).frequency
     let heard = detectPitch(tone(f), sampleRate: rate)!
     let note = Note(frequency: heard)
@@ -20,5 +20,9 @@ for midi in Note.guitar {
 let flat = Note(frequency: detectPitch(tone(108.9), sampleRate: rate)!)
 precondition(flat.name == "A" && flat.octave == 2 && (-19 ... -15).contains(flat.cents), "flat A2: \(flat)")
 precondition(detectPitch([Float](repeating: 0, count: 4096), sampleRate: rate) == nil, "silence has no pitch")
-precondition(Note(frequency: 330).nearestString == 64 && Note(frequency: 82).nearestString == 40)
+precondition(Note(frequency: 330).nearestString(in: .standard) == 64 && Note(frequency: 82).nearestString(in: .standard) == 40)
+precondition(Note(frequency: 73.4).nearestString(in: .dropD) == 38, "low D in Drop D")
+for t in Tuning.allCases {
+    precondition(t.strings.count == 6 && t.strings == t.strings.sorted() && Set(t.strings).count == 6, "\(t.name) strings")
+}
 print("pitch detection ok")

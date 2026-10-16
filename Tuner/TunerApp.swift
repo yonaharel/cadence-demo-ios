@@ -9,6 +9,7 @@ struct TunerApp: App {
 
 struct ContentView: View {
     @State private var tuner = Tuner()
+    @State private var tone = ReferenceTone()
     @AppStorage("tuning") private var tuning = Tuning.standard
     @Environment(\.scenePhase) private var phase
     private let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"
@@ -23,7 +24,7 @@ struct ContentView: View {
             }
             .pickerStyle(.menu)
             .padding(.top, 8)
-            Strings(tuning: tuning, active: tuner.hearing ? tuner.note?.nearestString(in: tuning) : nil)
+            Strings(tuning: tuning, active: tuner.hearing ? tuner.note?.nearestString(in: tuning) : nil, play: tone.play)
                 .padding(.top, 12)
             Spacer()
             switch tuner.state {
@@ -50,21 +51,26 @@ struct ContentView: View {
     }
 }
 
-/// The six strings of the tuning; the one being tuned is filled.
+/// The six strings of the tuning; the one being tuned is filled. Tap one to hear its note.
 struct Strings: View {
     let tuning: Tuning
     let active: Int?
+    let play: (Int) -> Void
 
     var body: some View {
         HStack(spacing: 12) {
             ForEach(tuning.strings, id: \.self) { midi in
                 let note = Note(midi: midi)
-                Text("\(note.name)\(Text("\(note.octave)").font(.caption2))")
-                    .font(.headline)
-                    .frame(width: 46, height: 46)
-                    .background(Circle().fill(midi == active ? Color.accentColor : Color.secondary.opacity(0.15)))
-                    .foregroundStyle(midi == active ? Color.white : Color.primary)
-                    .accessibilityLabel("\(note.name) \(note.octave) string\(midi == active ? ", tuning" : "")")
+                Button { play(midi) } label: {
+                    Text("\(note.name)\(Text("\(note.octave)").font(.caption2))")
+                        .font(.headline)
+                        .frame(width: 46, height: 46)
+                        .background(Circle().fill(midi == active ? Color.accentColor : Color.secondary.opacity(0.15)))
+                        .foregroundStyle(midi == active ? Color.white : Color.primary)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("\(note.name) \(note.octave) string\(midi == active ? ", tuning" : "")")
+                .accessibilityHint("Plays the note")
             }
         }
         .animation(.easeOut(duration: 0.15), value: active)

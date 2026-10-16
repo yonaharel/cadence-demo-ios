@@ -26,7 +26,8 @@ final class Tuner {
         guard await AVAudioApplication.requestRecordPermission() else { state = .denied; return }
         do {
             let session = AVAudioSession.sharedInstance()
-            try session.setCategory(.record, mode: .measurement)
+            // playAndRecord so ReferenceTone can play while listening; the speaker, not the earpiece.
+            try session.setCategory(.playAndRecord, mode: .measurement, options: .defaultToSpeaker)
             try session.setActive(true)
             let input = engine.inputNode
             let format = input.outputFormat(forBus: 0)
@@ -67,5 +68,30 @@ final class Tuner {
         // The median of the last few readings steadies the needle without lagging behind a retune.
         recent = Array((recent + [pitch]).suffix(5))
         note = Note(frequency: recent.sorted()[recent.count / 2])
+    }
+}
+
+/// Plays a string's note so you can tune by ear.
+@MainActor
+final class ReferenceTone {
+    private let engine = AVAudioEngine()
+    private let sampler = AVAudioUnitSampler() // with no instrument loaded it plays a plain sine tone
+    private var release: Task<Void, Never>?
+
+    init() {
+        engine.attach(sampler)
+        engine.connect(sampler, to: engine.mainMixerNode, format: nil)
+    }
+
+    func play(_ midi: Int) {
+        // The engine stops when the audio session changes (the tuner starting or stopping), so restart it on demand.
+        if !engine.isRunning { try? engine.start() }
+        release?.cancel()
+        sampler.sendController(123, withValue: 0, onChannel: 0) // all notes off
+        sampler.startNote(UInt8(midi), withVelocity: 110, onChannel: 0)
+        release = Task {
+            try? await Task.sleep(for: .seconds(2))
+            if !Task.isCancelled { sampler.stopNote(UInt8(midi), onChannel: 0) }
+        }
     }
 }

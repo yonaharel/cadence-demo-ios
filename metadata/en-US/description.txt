@@ -1,7 +1,7 @@
-A clean, fast guitar tuner. Play a string and the tuner shows the note, how many cents sharp or flat it is, and which way to turn the peg.
+A clean, fast guitar tuner. Play a string and Twang shows the note, how many cents sharp or flat it is, and which way to turn the peg.
 
-• Standard tuning: E A D G B E, with the string you're tuning highlighted
+• 14 tunings: Standard, Half step down, Whole step down, C Standard, Drop D, Drop C♯, Drop C, Double Drop D, Open D, Open E, Open G, Open A, Open C and DADGAD
+• The string you're tuning is highlighted, and the app remembers your last tuning
+• Tap any string to hear its note and tune by ear
 • A steady needle with a clear in-tune zone
 • Works offline; the microphone is only used while the tuner is open, and audio never leaves your iPhone
-
-Shipped with Cadence, an open release-management tool for iOS and Android.

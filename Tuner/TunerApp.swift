@@ -29,7 +29,7 @@ struct ContentView: View {
             Spacer()
             switch tuner.state {
             case .denied:
-                Unavailable(message: "Tuner needs the microphone to hear your guitar.", action: "Open Settings") {
+                Unavailable(message: "Twang needs the microphone to hear your guitar.", action: "Open Settings") {
                     if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) }
                 }
             case .failed(let reason):

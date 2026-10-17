@@ -15,6 +15,8 @@ final class Tuner {
     private var recent: [Double] = []
     private var quietFrames = 0
     private let demo = UserDefaults.standard.double(forKey: "demoFrequency")
+    /// The permission alert makes the scene inactive then active, which calls start() again while the first call waits.
+    private var starting = false
 
     init() {
         // App Store screenshots: launch with `-demoFrequency 108.9` for a fixed reading without the microphone.
@@ -22,7 +24,9 @@ final class Tuner {
     }
 
     func start() async {
-        guard demo == 0, state == .idle else { return }
+        guard demo == 0, state == .idle, !starting else { return }
+        starting = true
+        defer { starting = false }
         guard await AVAudioApplication.requestRecordPermission() else { state = .denied; return }
         do {
             let session = AVAudioSession.sharedInstance()

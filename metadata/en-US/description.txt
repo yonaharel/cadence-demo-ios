@@ -1,7 +1,6 @@
 A clean, fast guitar tuner. Play a string and the tuner shows the note, how many cents sharp or flat it is, and which way to turn the peg.
 
-• Standard tuning: E A D G B E, with the string you're tuning highlighted
+• 14 tunings: Standard, Half step down, Drop D, Open G, DADGAD and more. The tuner remembers your last choice
+• The string you're tuning is highlighted; tap any string to hear its note
 • A steady needle with a clear in-tune zone
 • Works offline; the microphone is only used while the tuner is open, and audio never leaves your iPhone
-
-Shipped with Cadence, an open release-management tool for iOS and Android.

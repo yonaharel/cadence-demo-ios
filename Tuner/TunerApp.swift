@@ -122,8 +122,8 @@ struct TuningCards: View {
                                 Text(notes).font(.caption.monospaced()).foregroundStyle(.secondary)
                             }
                             .padding(.horizontal, 12).padding(.vertical, 8)
-                            .background(RoundedRectangle(cornerRadius: 14).fill(t == tuning ? Color.accentColor.opacity(0.15) : Color.secondary.opacity(0.1)))
-                            .overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(t == tuning ? Color.accentColor : .clear, lineWidth: 2))
+                            .background(RoundedRectangle(cornerRadius: 14).fill(Color.secondary.opacity(0.1)))
+                            .selectionHighlight(t == tuning, cornerRadius: 14)
                             .foregroundStyle(t == tuning ? Color.accentColor : Color.primary)
                         }
                         .buttonStyle(.plain)
@@ -183,6 +183,49 @@ struct A4Ruler: View {
         .accessibilityValue("A4 \(a4) hertz")
         .accessibilityAdjustableAction { direction in a4 = min(max(a4 + (direction == .increment ? 1 : -1), 415), 466) }
         .accessibilityAction(named: "Reset to 440") { a4 = 440 }
+    }
+}
+
+/// Selection that grows in: a tinted circle expands from the centre to fill the shape, then the border draws itself round.
+struct SelectionHighlight: ViewModifier {
+    let isSelected: Bool
+    let cornerRadius: CGFloat
+    @State private var fill: CGFloat = 0
+    @State private var border: CGFloat = 0
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    func body(content: Content) -> some View {
+        let shape = RoundedRectangle(cornerRadius: cornerRadius)
+        content
+            .background {
+                GeometryReader { geo in
+                    let diameter = hypot(geo.size.width, geo.size.height) // just covers the corners
+                    Circle().fill(Color.accentColor.opacity(0.15))
+                        .frame(width: diameter, height: diameter)
+                        .scaleEffect(fill)
+                        .position(x: geo.size.width / 2, y: geo.size.height / 2)
+                }
+                .clipShape(shape)
+            }
+            .overlay(shape.inset(by: 1).trim(from: 0, to: border).stroke(Color.accentColor, style: StrokeStyle(lineWidth: 2, lineCap: .round)))
+            .onAppear { fill = isSelected ? 1 : 0; border = fill }
+            .onChange(of: isSelected) { _, selected in
+                if reduceMotion {
+                    withAnimation(.easeOut(duration: 0.2)) { fill = selected ? 1 : 0; border = fill }
+                } else if selected {
+                    withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) { fill = 1 }
+                    withAnimation(.easeInOut(duration: 0.4).delay(0.18)) { border = 1 } // draws once the fill has mostly landed
+                } else {
+                    withAnimation(.easeOut(duration: 0.2)) { fill = 0; border = 0 }
+                }
+            }
+    }
+}
+
+extension View {
+    /// See `SelectionHighlight`.
+    func selectionHighlight(_ isSelected: Bool, cornerRadius: CGFloat) -> some View {
+        modifier(SelectionHighlight(isSelected: isSelected, cornerRadius: cornerRadius))
     }
 }
 

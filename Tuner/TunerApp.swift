@@ -11,18 +11,23 @@ struct ContentView: View {
     @State private var tuner = Tuner()
     @State private var tone = ReferenceTone()
     @AppStorage("tuning") private var tuning = Tuning.standard
+    @AppStorage("a4") private var a4 = 440
     @Environment(\.scenePhase) private var phase
     private let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"
     private let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "?"
 
     var body: some View {
         VStack(spacing: 0) {
-            Picker("Tuning", selection: $tuning) {
-                ForEach(Tuning.allCases) { t in
-                    Text(t.name).tag(t)
+            HStack {
+                Picker("Tuning", selection: $tuning) {
+                    ForEach(Tuning.allCases) { t in
+                        Text(t.name).tag(t)
+                    }
                 }
+                .pickerStyle(.menu)
+                Spacer()
+                A4Control(a4: $a4)
             }
-            .pickerStyle(.menu)
             .padding(.top, 8)
             Strings(tuning: tuning, active: tuner.hearing ? tuner.note?.nearestString(in: tuning) : nil, play: tone.play)
                 .padding(.top, 12)
@@ -44,10 +49,47 @@ struct ContentView: View {
                 .padding(.bottom, 8)
         }
         .padding(.horizontal, 24)
-        .task { await tuner.start() }
+        .task { syncA4(); await tuner.start() }
+        .onChange(of: a4) { syncA4() }
         .onChange(of: phase) { _, phase in
             if phase == .active { Task { await tuner.start() } } else { tuner.stop() }
         }
+    }
+
+    /// Clamped so a corrupt saved value can't reach Note.
+    private func syncA4() {
+        tuner.a4 = Double(min(max(a4, 415), 466))
+        tone.a4 = tuner.a4
+    }
+}
+
+/// The reference pitch chip; tap for a stepper and the usual picks (440 doubles as the reset).
+struct A4Control: View {
+    @Binding var a4: Int
+    @State private var open = false
+
+    var body: some View {
+        Button("A4 \(a4) Hz") { open = true }
+            .buttonStyle(.bordered)
+            .font(.subheadline.monospacedDigit())
+            .accessibilityLabel("Reference pitch, A4 \(a4) hertz")
+            .popover(isPresented: $open) {
+                VStack(spacing: 16) {
+                    Stepper("\(a4) Hz", value: $a4, in: 415...466)
+                    HStack {
+                        ForEach([432, 440, 442], id: \.self) { hz in
+                            if hz == a4 {
+                                Button("\(hz)") { a4 = hz }.buttonStyle(.borderedProminent)
+                            } else {
+                                Button("\(hz)") { a4 = hz }.buttonStyle(.bordered)
+                            }
+                        }
+                    }
+                }
+                .padding()
+                .frame(minWidth: 220)
+                .presentationCompactAdaptation(.popover)
+            }
     }
 }
 

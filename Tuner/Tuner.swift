@@ -12,6 +12,7 @@ final class Tuner {
     private(set) var hearing = false
     /// Cents per buffer, oldest first; nil where nothing confident was heard.
     private(set) var history: [Double?] = []
+    var a4 = 440.0
     static let historyLength = 60 // ~5 s at 4096 samples / 48 kHz
 
     private let engine = AVAudioEngine()
@@ -79,7 +80,7 @@ final class Tuner {
         quietFrames = 0
         hearing = true
         guard let f = smoother.add(pitch) else { record(nil); return }
-        let new = Note(frequency: f)
+        let new = Note(frequency: f, a4: a4)
         if new.midi != note?.midi { history = [] }
         record(new.cents)
         note = new
@@ -97,6 +98,8 @@ final class ReferenceTone {
     private let engine = AVAudioEngine()
     private let sampler = AVAudioUnitSampler() // with no instrument loaded it plays a plain sine tone
     private var release: Task<Void, Never>?
+    /// Retunes the sampler so the strings' notes follow the reference pitch.
+    var a4 = 440.0 { didSet { sampler.globalTuning = Float(1200 * log2(a4 / 440)) } }
 
     init() {
         engine.attach(sampler)

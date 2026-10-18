@@ -1,5 +1,5 @@
 // Self-check for the tuner's pitch detection on synthetic guitar-like tones.
-//   swiftc -O Tuner/Pitch.swift scripts/check-pitch/main.swift -o /tmp/check-pitch && /tmp/check-pitch
+//   swiftc -O Tuner/Pitch/*.swift scripts/check-pitch/main.swift -o /tmp/check-pitch && /tmp/check-pitch
 import Foundation
 
 let rate = 48_000.0

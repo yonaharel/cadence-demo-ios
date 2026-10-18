@@ -10,7 +10,9 @@ targets:
   Tuner:
     type: application
     platform: iOS
-    sources: [Tuner]
+    sources:
+      - path: Tuner
+        type: syncedFolder # Xcode buildable folder: new files are picked up without editing the project
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.yonaharel.cadencedemo

@@ -84,25 +84,11 @@ struct SettingsSheet: View {
 
     var body: some View {
         Form {
-            Picker("Tuning", selection: $tuning) {
-                ForEach(Tuning.allCases) { t in Text(t.name).tag(t) }
+            Section("Tuning") {
+                TuningCards(tuning: $tuning).listRowInsets(EdgeInsets())
             }
             Section("Reference pitch") {
-                Stepper("A4 \(a4) Hz", value: $a4, in: 415...466).monospacedDigit()
-                HStack {
-                    ForEach([432, 440, 442], id: \.self) { hz in // 440 doubles as the reset
-                        Group {
-                            if hz == a4 {
-                                Button("\(hz)") { a4 = hz }.buttonStyle(.borderedProminent)
-                            } else {
-                                Button("\(hz)") { a4 = hz }.buttonStyle(.bordered)
-                            }
-                        }
-                        .frame(maxWidth: .infinity)
-                        .accessibilityLabel("\(hz) hertz")
-                        .accessibilityAddTraits(hz == a4 ? .isSelected : [])
-                    }
-                }
+                A4Ruler(a4: $a4)
             }
             Section {
                 VStack(spacing: 6) {
@@ -117,6 +103,86 @@ struct SettingsSheet: View {
             }
         }
         .scrollContentBackground(.hidden) // let the sheet's glass show through
+    }
+}
+
+/// Tuning cards to swipe through; each shows its strings so you can see what you're picking.
+struct TuningCards: View {
+    @Binding var tuning: Tuning
+
+    var body: some View {
+        ScrollViewReader { proxy in
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(Tuning.allCases) { t in
+                        let notes = t.strings.map { Note(midi: $0).name }.joined(separator: " ")
+                        Button { tuning = t } label: {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(t.name).font(.subheadline.weight(.semibold))
+                                Text(notes).font(.caption.monospaced()).foregroundStyle(.secondary)
+                            }
+                            .padding(.horizontal, 12).padding(.vertical, 8)
+                            .background(RoundedRectangle(cornerRadius: 14).fill(t == tuning ? Color.accentColor.opacity(0.15) : Color.secondary.opacity(0.1)))
+                            .overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(t == tuning ? Color.accentColor : .clear, lineWidth: 2))
+                            .foregroundStyle(t == tuning ? Color.accentColor : Color.primary)
+                        }
+                        .buttonStyle(.plain)
+                        .id(t)
+                        .accessibilityLabel("\(t.name), \(notes)")
+                        .accessibilityAddTraits(t == tuning ? .isSelected : [])
+                    }
+                }
+                .padding(12)
+            }
+            .onAppear { proxy.scrollTo(tuning, anchor: .center) }
+        }
+        .sensoryFeedback(.selection, trigger: tuning)
+    }
+}
+
+/// A ruler you drag to set A4, snapping to each hertz; 432 and 442 are dotted. Double-tap the value for 440.
+struct A4Ruler: View {
+    @Binding var a4: Int
+    @State private var position: Int?
+    private let step: CGFloat = 12
+
+    var body: some View {
+        VStack(spacing: 6) {
+            Text("\(a4) Hz").font(.title.weight(.semibold).monospacedDigit())
+                .contentTransition(.numericText(value: Double(a4)))
+                .onTapGesture(count: 2) { a4 = 440 }
+            GeometryReader { geo in
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 0) {
+                        ForEach(415...466, id: \.self) { hz in
+                            VStack(spacing: 3) {
+                                Capsule().fill(Color.secondary.opacity(hz % 10 == 0 ? 0.8 : 0.4)).frame(width: 1.5, height: hz % 10 == 0 ? 20 : 12)
+                                Circle().fill(Color.secondary).frame(width: 4, height: 4).opacity(hz == 432 || hz == 442 ? 1 : 0)
+                                Text(hz % 10 == 0 ? "\(hz)" : " ").font(.caption2).foregroundStyle(.secondary).fixedSize()
+                            }
+                            .frame(width: step, height: 46, alignment: .top)
+                            .id(hz)
+                        }
+                    }
+                    .scrollTargetLayout()
+                }
+                .safeAreaPadding(.horizontal, (geo.size.width - step) / 2)
+                .scrollTargetBehavior(.viewAligned)
+                .scrollPosition(id: $position, anchor: .center)
+                .overlay(alignment: .top) { Capsule().fill(Color.accentColor).frame(width: 3, height: 26).offset(y: -3).allowsHitTesting(false) }
+            }
+            .frame(height: 46)
+        }
+        .padding(.vertical, 4)
+        .onAppear { position = a4 }
+        .onChange(of: position) { if let position, position != a4 { a4 = position } }
+        .onChange(of: a4) { if position != a4 { withAnimation { position = a4 } } }
+        .sensoryFeedback(.selection, trigger: a4)
+        .accessibilityElement()
+        .accessibilityLabel("Reference pitch")
+        .accessibilityValue("A4 \(a4) hertz")
+        .accessibilityAdjustableAction { direction in a4 = min(max(a4 + (direction == .increment ? 1 : -1), 415), 466) }
+        .accessibilityAction(named: "Reset to 440") { a4 = 440 }
     }
 }
 

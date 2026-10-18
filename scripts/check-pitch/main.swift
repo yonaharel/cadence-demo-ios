@@ -70,4 +70,19 @@ precondition(detectPitch(Array(hiss.suffix(4096)), sampleRate: rate) == nil, "fi
 precondition(detectPitch(noise(4096, amplitude: 0.3), sampleRate: rate) == nil, "raw noise has no pitch")
 let high = filtered(3000, buffers: 2)
 precondition(sqrt(high.map { $0 * $0 }.reduce(0, +) / 4096) < 0.1, "3 kHz is attenuated")
+var s = Smoother()
+for _ in 0..<5 { _ = s.add(110) }
+precondition(s.add(220) == nil, "a single octave jump is held")
+precondition(abs(s.add(110)! - 110) < 0.01, "steady note continues after a blip")
+var slide = Smoother(), out: Double? = nil
+for i in 0..<20 { out = slide.add(105 + Double(i) * 0.5); precondition(out != nil, "slow retune is never held") }
+var change = Smoother()
+for _ in 0..<5 { _ = change.add(110) }
+precondition(change.add(146.8) == nil && change.add(146.8) == nil, "first two of a new string held")
+precondition(abs(change.add(146.8)! - 146.8) < 0.01, "new string accepted on the 3rd buffer")
+var flicker = Smoother()
+for _ in 0..<5 { _ = flicker.add(110) }
+for f in [300.0, 500, 300, 500, 300, 500] { precondition(flicker.add(f) == nil, "alternating outliers never accepted") }
+var fresh = Smoother()
+precondition(fresh.add(82.4) != nil, "first reading after reset is shown")
 print("pitch detection ok")

@@ -12,7 +12,7 @@ final class Tuner {
     private(set) var hearing = false
 
     private let engine = AVAudioEngine()
-    private var recent: [Double] = []
+    private var smoother = Smoother()
     private var quietFrames = 0
     private let demo = UserDefaults.standard.double(forKey: "demoFrequency")
     /// The permission alert makes the scene inactive then active, which calls start() again while the first call waits.
@@ -67,14 +67,13 @@ final class Tuner {
     private func heard(_ pitch: Double?) {
         guard let pitch else {
             quietFrames += 1
-            if quietFrames > 10 { hearing = false; recent.removeAll() }
+            if quietFrames > 10 { hearing = false; smoother.reset() }
             return
         }
         quietFrames = 0
         hearing = true
-        // The median of the last few readings steadies the needle without lagging behind a retune.
-        recent = Array((recent + [pitch]).suffix(5))
-        note = Note(frequency: recent.sorted()[recent.count / 2])
+        guard let f = smoother.add(pitch) else { return }
+        note = Note(frequency: f)
     }
 }
 

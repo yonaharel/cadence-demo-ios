@@ -19,13 +19,19 @@ final class PitchListener {
     var a4 = 440.0 {
         didSet {  // note and trace were measured against the old A4; demo keeps its fixed flat line
             guard demo == 0 else { return }
-            history = []; if let n = note { note = Note(frequency: n.frequency, a4: a4) }
+            history = []
+            if let n = note { note = Note(frequency: n.frequency, a4: a4) }
         }
     }
     /// How loud the mic is (RMS after filtering), for the sensitivity meter.
     private(set) var level: Float = 0
     /// 0 (loud room) to 1 (quiet strings).
-    var sensitivity: Float = 0.7 { didSet { let s = sensitivity; tapSensitivity.withLock { $0 = s } } }
+    var sensitivity: Float = 0.7 {
+        didSet {
+            let s = sensitivity
+            tapSensitivity.withLock { $0 = s }
+        }
+    }
     static let historyLength = 60  // ~5 s at 4096 samples / 48 kHz
 
     private let engine = AVAudioEngine()
@@ -39,7 +45,9 @@ final class PitchListener {
     init() {
         // App Store screenshots: launch with `-demoFrequency 108.9` for a fixed reading without the microphone.
         if demo > 0 {
-            note = Note(frequency: demo); hearing = true; state = .listening
+            note = Note(frequency: demo)
+            hearing = true
+            state = .listening
             history = Array(repeating: note!.cents, count: Self.historyLength)
         }
     }
@@ -48,7 +56,10 @@ final class PitchListener {
         guard demo == 0, state == .idle, !starting else { return }
         starting = true
         defer { starting = false }
-        guard await AVAudioApplication.requestRecordPermission() else { state = .denied; return }
+        guard await AVAudioApplication.requestRecordPermission() else {
+            state = .denied
+            return
+        }
         do {
             let session = AVAudioSession.sharedInstance()
             // playAndRecord so ReferenceTone can play while listening; the speaker, not the earpiece.
@@ -60,7 +71,8 @@ final class PitchListener {
                 onBus: 0, bufferSize: 4096, format: format,
                 block: Self.analyser(sampleRate: format.sampleRate, sensitivity: tapSensitivity) { [weak self] pitch, level in
                     Task { @MainActor in
-                        self?.level = level; self?.heard(pitch)
+                        self?.level = level
+                        self?.heard(pitch)
                     }
                 })
             try engine.start()
@@ -76,7 +88,12 @@ final class PitchListener {
         engine.stop()
         try? AVAudioSession.sharedInstance().setActive(false)
         state = .idle
-        history = []; smoother.reset(); quietFrames = 0; hearing = false; level = 0  // resume with a gap, not joined to the old trace
+        // Resume with a gap, not joined to the old trace.
+        history = []
+        smoother.reset()
+        quietFrames = 0
+        hearing = false
+        level = 0
     }
 
     /// Built outside the main actor: the tap runs on an audio thread.
@@ -96,12 +113,18 @@ final class PitchListener {
         guard let pitch else {
             record(nil)
             quietFrames += 1
-            if quietFrames > 10 { hearing = false; smoother.reset() }
+            if quietFrames > 10 {
+                hearing = false
+                smoother.reset()
+            }
             return
         }
         quietFrames = 0
         hearing = true
-        guard let f = smoother.add(pitch) else { record(nil); return }
+        guard let f = smoother.add(pitch) else {
+            record(nil)
+            return
+        }
         let new = Note(frequency: f, a4: a4)
         if new.midi != note?.midi { history = [] }
         record(new.cents)

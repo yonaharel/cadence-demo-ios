@@ -18,7 +18,9 @@ struct SettingsSheet: View {
                     LevelMeter(level: model.level, threshold: model.listeningLevel)
                     Slider(value: Binding(model.$sensitivity), in: 0...1).accessibilityLabel("Sensitivity")
                     HStack {
-                        Text("Loud room"); Spacer(); Text("Quiet strings")
+                        Text("Loud room")
+                        Spacer()
+                        Text("Quiet strings")
                     }.font(.caption).foregroundStyle(.secondary)
                 }
             } header: {

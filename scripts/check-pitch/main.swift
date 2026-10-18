@@ -64,7 +64,8 @@ let lowC = Note(midi: 36, a4: 415)
 precondition(Note(frequency: detectPitch(filtered(lowC.frequency), sampleRate: rate)!, a4: 415).midi == 36, "C2 at A4=415 survives the high-pass")
 let noisyA = Note(frequency: detectPitch(filtered(110, noiseAmp: 0.3), sampleRate: rate)!)
 precondition(noisyA.midi == 45 && abs(noisyA.cents) < 3, "A2 in noise: \(noisyA)")
-var hiss = noise(4096 * 3, amplitude: 0.3), hissFilter = BandPass(sampleRate: rate)
+var hiss = noise(4096 * 3, amplitude: 0.3)
+var hissFilter = BandPass(sampleRate: rate)
 hissFilter.process(&hiss)
 precondition(detectPitch(Array(hiss.suffix(4096)), sampleRate: rate) == nil, "filtered noise has no pitch")
 precondition(detectPitch(noise(4096, amplitude: 0.3), sampleRate: rate) == nil, "raw noise has no pitch")
@@ -74,8 +75,12 @@ var s = Smoother()
 for _ in 0..<5 { _ = s.add(110) }
 precondition(s.add(220) == nil, "a single octave jump is held")
 precondition(abs(s.add(110)! - 110) < 0.01, "steady note continues after a blip")
-var slide = Smoother(), out: Double? = nil
-for i in 0..<20 { out = slide.add(105 + Double(i) * 0.5); precondition(out != nil, "slow retune is never held") }
+var slide = Smoother()
+var out: Double? = nil
+for i in 0..<20 {
+    out = slide.add(105 + Double(i) * 0.5)
+    precondition(out != nil, "slow retune is never held")
+}
 var change = Smoother()
 for _ in 0..<5 { _ = change.add(110) }
 precondition(change.add(146.8) == nil && change.add(146.8) == nil, "first two of a new string held")

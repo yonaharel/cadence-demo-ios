@@ -8,7 +8,9 @@ struct BandPass {
 
         // RBJ audio-EQ cookbook, Q = 1/√2 (Butterworth).
         init(sampleRate: Double, cutoff: Double, highPass: Bool) {
-            let w = 2 * Double.pi * cutoff / sampleRate, alpha = sin(w) / (2 * 0.7071), c = cos(w)
+            let w = 2 * Double.pi * cutoff / sampleRate
+            let alpha = sin(w) / (2 * 0.7071)
+            let c = cos(w)
             let a0 = 1 + alpha
             b0 = (highPass ? 1 + c : 1 - c) / 2 / a0
             b1 = (highPass ? -(1 + c) : 1 - c) / a0
@@ -19,7 +21,10 @@ struct BandPass {
 
         mutating func process(_ x: Double) -> Double {
             let y = b0 * x + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2
-            x2 = x1; x1 = x; y2 = y1; y1 = y
+            x2 = x1
+            x1 = x
+            y2 = y1
+            y1 = y
             return y
         }
     }

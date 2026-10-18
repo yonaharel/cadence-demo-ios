@@ -23,5 +23,8 @@ struct Smoother {
         return Self.median(history)
     }
 
-    mutating func reset() { history.removeAll(); pending.removeAll() }
+    mutating func reset() {
+        history.removeAll()
+        pending.removeAll()
+    }
 }

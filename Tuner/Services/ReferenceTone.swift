@@ -12,11 +12,18 @@ final class ReferenceTone {
     var a4 = 440.0
 
     init() {
-        let rate = 48_000.0, pluck = pluck
-        var phase = 0.0, time = 0.0, playing = 0
+        let rate = 48_000.0
+        let pluck = pluck
+        var phase = 0.0
+        var time = 0.0
+        var playing = 0
         let source = AVAudioSourceNode { _, _, frames, output in
             let (frequency, count) = pluck.withLock { $0 }
-            if count != playing { playing = count; phase = 0; time = 0 }
+            if count != playing {
+                playing = count
+                phase = 0
+                time = 0
+            }
             for i in 0..<Int(frames) {
                 let envelope = frequency > 0 ? min(time / 0.005, 1) * exp(-time / 0.8) : 0  // 5 ms attack, rings ~2 s
                 var x = 0.0

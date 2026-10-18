@@ -15,12 +15,14 @@ final class TunerViewModel {
 
     private let listener = PitchListener()
     private let tone = ReferenceTone()
-    @ObservationIgnored private var subscriptions: Set<AnyCancellable> = []
 
     init() {
-        // Publishers send the current value first, so these also apply the saved settings at launch.
-        $a4.publisher.sink { [weak self] a4 in self?.apply(a4: a4) }.store(in: &subscriptions)
-        $sensitivity.publisher.sink { [weak self] s in self?.listener.sensitivity = Float(min(max(s, 0), 1)) }.store(in: &subscriptions)
+        // Apply the saved settings now: the loops below only get their first value on the next main-actor turn.
+        apply(a4: a4)
+        apply(sensitivity: sensitivity)
+        let a4Changes = $a4.publisher.values, sensitivityChanges = $sensitivity.publisher.values
+        Task { [weak self] in for await a4 in a4Changes { self?.apply(a4: a4) } }
+        Task { [weak self] in for await sensitivity in sensitivityChanges { self?.apply(sensitivity: sensitivity) } }
     }
 
     // The live reading, passed through from the listener.
@@ -46,4 +48,6 @@ final class TunerViewModel {
         listener.a4 = hz
         tone.a4 = hz
     }
+
+    private func apply(sensitivity: Double) { listener.sensitivity = Float(min(max(sensitivity, 0), 1)) }
 }

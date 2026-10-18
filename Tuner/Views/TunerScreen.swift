@@ -2,7 +2,7 @@ import SwiftUI
 
 /// The tuner: your setup at the top, the strings, and the reading.
 struct TunerScreen: View {
-    @State private var model = TunerViewModel()
+    let model: TunerViewModel
     @State private var settingsOpen = false
     @Environment(\.scenePhase) private var phase
     private let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"
@@ -49,5 +49,5 @@ struct TunerScreen: View {
 }
 
 #Preview {
-    TunerScreen()
+    TunerScreen(model: TunerViewModel())
 }

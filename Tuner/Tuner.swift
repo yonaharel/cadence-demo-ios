@@ -55,9 +55,12 @@ final class Tuner {
 
     /// Built outside the main actor: the tap runs on an audio thread.
     private nonisolated static func analyser(sampleRate: Double, report: @escaping @Sendable (Double?) -> Void) -> AVAudioNodeTapBlock {
-        { buffer, _ in
+        var filter = BandPass(sampleRate: sampleRate) // fresh per tap; keeps its state across buffers
+        return { buffer, _ in
             guard let data = buffer.floatChannelData?[0] else { return }
-            report(detectPitch(Array(UnsafeBufferPointer(start: data, count: Int(buffer.frameLength))), sampleRate: sampleRate))
+            var samples = Array(UnsafeBufferPointer(start: data, count: Int(buffer.frameLength)))
+            filter.process(&samples)
+            report(detectPitch(samples, sampleRate: sampleRate))
         }
     }
 

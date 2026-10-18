@@ -1,5 +1,6 @@
 import AVFoundation
 import Observation
+import os
 
 /// Listens to the microphone and reports the note being played. Audio is analysed on the device and never stored.
 @MainActor @Observable
@@ -16,10 +17,15 @@ final class Tuner {
         guard demo == 0 else { return }
         history = []; if let n = note { note = Note(frequency: n.frequency, a4: a4) }
     } }
+    /// How loud the mic is (RMS after filtering), for the sensitivity meter.
+    private(set) var level: Float = 0
+    /// 0 (loud room) to 1 (quiet strings).
+    var sensitivity: Float = 0.7 { didSet { let s = sensitivity; tapSensitivity.withLock { $0 = s } } }
     static let historyLength = 60 // ~5 s at 4096 samples / 48 kHz
 
     private let engine = AVAudioEngine()
     private var smoother = Smoother()
+    private let tapSensitivity = OSAllocatedUnfairLock(initialState: Float(0.7)) // read by the audio thread
     private var quietFrames = 0
     private let demo = UserDefaults.standard.double(forKey: "demoFrequency")
     /// The permission alert makes the scene inactive then active, which calls start() again while the first call waits.
@@ -44,8 +50,8 @@ final class Tuner {
             try session.setActive(true)
             let input = engine.inputNode
             let format = input.outputFormat(forBus: 0)
-            input.installTap(onBus: 0, bufferSize: 4096, format: format, block: Self.analyser(sampleRate: format.sampleRate) { [weak self] pitch in
-                Task { @MainActor in self?.heard(pitch) }
+            input.installTap(onBus: 0, bufferSize: 4096, format: format, block: Self.analyser(sampleRate: format.sampleRate, sensitivity: tapSensitivity) { [weak self] pitch, level in
+                Task { @MainActor in self?.level = level; self?.heard(pitch) }
             })
             try engine.start()
             state = .listening
@@ -60,17 +66,17 @@ final class Tuner {
         engine.stop()
         try? AVAudioSession.sharedInstance().setActive(false)
         state = .idle
-        history = []; smoother.reset(); quietFrames = 0; hearing = false // resume with a gap, not joined to the old trace
+        history = []; smoother.reset(); quietFrames = 0; hearing = false; level = 0 // resume with a gap, not joined to the old trace
     }
 
     /// Built outside the main actor: the tap runs on an audio thread.
-    private nonisolated static func analyser(sampleRate: Double, report: @escaping @Sendable (Double?) -> Void) -> AVAudioNodeTapBlock {
+    private nonisolated static func analyser(sampleRate: Double, sensitivity: OSAllocatedUnfairLock<Float>, report: @escaping @Sendable (Double?, Float) -> Void) -> AVAudioNodeTapBlock {
         var filter = BandPass(sampleRate: sampleRate) // fresh per tap; keeps its state across buffers
         return { buffer, _ in
             guard let data = buffer.floatChannelData?[0] else { return }
             var samples = Array(UnsafeBufferPointer(start: data, count: Int(buffer.frameLength)))
             filter.process(&samples)
-            report(detectPitch(samples, sampleRate: sampleRate))
+            report(detectPitch(samples, sampleRate: sampleRate, sensitivity: sensitivity.withLock { $0 }), rms(samples))
         }
     }
 

@@ -85,4 +85,10 @@ for _ in 0..<5 { _ = flicker.add(110) }
 for f in [300.0, 500, 300, 500, 300, 500] { precondition(flicker.add(f) == nil, "alternating outliers never accepted") }
 var fresh = Smoother()
 precondition(fresh.add(82.4) != nil, "first reading after reset is shown")
+// Sensitivity: 0 is strict for a loud room, 1 hears quiet strings.
+let quietA = tone(110).map { $0 * 0.02 } // RMS ≈ 0.009, a softly picked string
+precondition(Note(frequency: detectPitch(quietA, sampleRate: rate)!).midi == 45, "quiet string heard at the default sensitivity")
+precondition(detectPitch(quietA, sampleRate: rate, sensitivity: 0) == nil, "quiet string ignored in loud-room mode")
+precondition(detectPitch(noise(4096, amplitude: 0.3), sampleRate: rate, sensitivity: 1) == nil, "noise still rejected at full sensitivity")
+precondition(minimumLevel(sensitivity: 0) > minimumLevel(sensitivity: 1), "more sensitive listens to quieter sound")
 print("pitch detection ok")

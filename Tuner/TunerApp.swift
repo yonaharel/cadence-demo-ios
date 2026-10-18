@@ -12,23 +12,25 @@ struct ContentView: View {
     @State private var tone = ReferenceTone()
     @AppStorage("tuning") private var tuning = Tuning.standard
     @AppStorage("a4") private var a4 = 440
+    @AppStorage("sensitivity") private var sensitivity = 0.7
+    @State private var settingsOpen = false
     @Environment(\.scenePhase) private var phase
     private let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"
     private let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "?"
 
     var body: some View {
         VStack(spacing: 0) {
-            HStack {
-                Picker("Tuning", selection: $tuning) {
-                    ForEach(Tuning.allCases) { t in
-                        Text(t.name).tag(t)
-                    }
-                }
-                .pickerStyle(.menu)
-                Spacer()
-                A4Control(a4: $a4)
+            Button { settingsOpen = true } label: {
+                Label("\(tuning.name) · A4 \(a4)", systemImage: "slider.horizontal.3").font(.subheadline.monospacedDigit())
             }
+            .glassPill()
+            .accessibilityLabel("Settings: \(tuning.name), A4 \(a4) hertz")
             .padding(.top, 8)
+            .sheet(isPresented: $settingsOpen) {
+                SettingsSheet(tuning: $tuning, a4: $a4, sensitivity: $sensitivity, tuner: tuner)
+                    .presentationDetents([.medium, .large])
+                    .presentationBackgroundInteraction(.enabled(upThrough: .medium)) // keep tuning while adjusting
+            }
             Strings(tuning: tuning, active: tuner.hearing ? tuner.note?.nearestString(in: tuning) : nil, play: tone.play)
                 .padding(.top, 12)
             Spacer()
@@ -49,8 +51,9 @@ struct ContentView: View {
                 .padding(.bottom, 8)
         }
         .padding(.horizontal, 24)
-        .task { syncA4(); await tuner.start() }
+        .task { syncA4(); syncSensitivity(); await tuner.start() }
         .onChange(of: a4) { syncA4() }
+        .onChange(of: sensitivity) { syncSensitivity() }
         .onChange(of: phase) { _, phase in
             if phase == .active { Task { await tuner.start() } } else { tuner.stop() }
         }
@@ -61,39 +64,81 @@ struct ContentView: View {
         tuner.a4 = Double(min(max(a4, 415), 466))
         tone.a4 = tuner.a4
     }
+
+    private func syncSensitivity() { tuner.sensitivity = Float(min(max(sensitivity, 0), 1)) }
 }
 
-/// The reference pitch chip; tap for a stepper and the usual picks (440 doubles as the reset).
-struct A4Control: View {
+private extension View {
+    /// Liquid Glass on iOS 26; a bordered capsule before it.
+    @ViewBuilder func glassPill() -> some View {
+        if #available(iOS 26, *) { buttonStyle(.glass) } else { buttonStyle(.bordered).buttonBorderShape(.capsule) }
+    }
+}
+
+/// Tuning, reference pitch and sensitivity, in a sheet the tuner keeps listening behind (glass on iOS 26).
+struct SettingsSheet: View {
+    @Binding var tuning: Tuning
     @Binding var a4: Int
-    @State private var open = false
+    @Binding var sensitivity: Double
+    let tuner: Tuner
 
     var body: some View {
-        Button("A4 \(a4) Hz") { open = true }
-            .buttonStyle(.bordered)
-            .font(.subheadline.monospacedDigit())
-            .accessibilityLabel("Reference pitch, A4 \(a4) hertz")
-            .popover(isPresented: $open) {
-                VStack(spacing: 16) {
-                    Stepper("\(a4) Hz", value: $a4, in: 415...466)
-                    HStack {
-                        ForEach([432, 440, 442], id: \.self) { hz in
-                            Group {
-                                if hz == a4 {
-                                    Button("\(hz)") { a4 = hz }.buttonStyle(.borderedProminent)
-                                } else {
-                                    Button("\(hz)") { a4 = hz }.buttonStyle(.bordered)
-                                }
+        Form {
+            Picker("Tuning", selection: $tuning) {
+                ForEach(Tuning.allCases) { t in Text(t.name).tag(t) }
+            }
+            Section("Reference pitch") {
+                Stepper("A4 \(a4) Hz", value: $a4, in: 415...466).monospacedDigit()
+                HStack {
+                    ForEach([432, 440, 442], id: \.self) { hz in // 440 doubles as the reset
+                        Group {
+                            if hz == a4 {
+                                Button("\(hz)") { a4 = hz }.buttonStyle(.borderedProminent)
+                            } else {
+                                Button("\(hz)") { a4 = hz }.buttonStyle(.bordered)
                             }
-                            .accessibilityLabel("\(hz) hertz")
-                            .accessibilityAddTraits(hz == a4 ? .isSelected : [])
                         }
+                        .frame(maxWidth: .infinity)
+                        .accessibilityLabel("\(hz) hertz")
+                        .accessibilityAddTraits(hz == a4 ? .isSelected : [])
                     }
                 }
-                .padding()
-                .frame(minWidth: 220)
-                .presentationCompactAdaptation(.popover)
             }
+            Section {
+                VStack(spacing: 6) {
+                    LevelMeter(level: tuner.level, threshold: minimumLevel(sensitivity: Float(sensitivity)))
+                    Slider(value: $sensitivity, in: 0...1).accessibilityLabel("Sensitivity")
+                    HStack { Text("Loud room"); Spacer(); Text("Quiet strings") }.font(.caption).foregroundStyle(.secondary)
+                }
+            } header: {
+                Text("Sensitivity")
+            } footer: {
+                Text("Pluck a string: the bar should pass the line. Turn it down if the room keeps setting it off.")
+            }
+        }
+        .scrollContentBackground(.hidden) // let the sheet's glass show through
+    }
+}
+
+/// The mic level on a log scale, with a line where the tuner starts listening.
+struct LevelMeter: View {
+    let level: Float
+    let threshold: Float
+
+    var body: some View {
+        GeometryReader { geo in
+            let x = { (v: Float) in geo.size.width * CGFloat(min(max((log10(max(v, 1e-4)) + 3) / 2.5, 0), 1)) } // 0.001 to ~0.3
+            ZStack(alignment: .leading) {
+                Capsule().fill(Color.secondary.opacity(0.2))
+                Capsule().fill(level > threshold ? Color.green : Color.secondary).frame(width: x(level))
+                Rectangle().fill(Color.primary).frame(width: 2, height: 16).offset(x: x(threshold) - 1)
+            }
+        }
+        .frame(height: 8)
+        .padding(.vertical, 4)
+        .animation(.linear(duration: 0.08), value: level)
+        .accessibilityElement()
+        .accessibilityLabel(level > threshold ? "Mic level: hearing you" : "Mic level: too quiet to hear")
     }
 }
 

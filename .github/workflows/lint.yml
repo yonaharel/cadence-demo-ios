@@ -1,0 +1,13 @@
+# Fails a pull request whose Swift isn't formatted. Fix locally with: make format
+name: Lint
+
+on:
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: macos-26
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - run: make lint

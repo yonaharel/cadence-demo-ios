@@ -24,6 +24,8 @@ jobs:
         env:
           VERSION: ${{ inputs.version }}
         run: test "$(sed -n 's/^MARKETING_VERSION = //p' Config/Version.xcconfig)" = "$VERSION"
+      - name: Lint (run make format to fix)
+        run: make lint
       - name: Archive and upload to App Store Connect
         env:
           ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}

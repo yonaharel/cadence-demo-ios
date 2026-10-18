@@ -1,6 +1,6 @@
 A clean, fast guitar tuner. Play a string and Twang shows the note, how many cents sharp or flat it is, and which way to turn the peg.
 
-• 14 tunings: Standard, Half step down, Whole step down, C Standard, Drop D, Drop C♯, Drop C, Double Drop D, Open D, Open E, Open G, Open A, Open C and DADGAD
+• 14 tunings: Standard, Half step down, Whole step down, C Standard, Drop D, Drop C#, Drop C, Double Drop D, Open D, Open E, Open G, Open A, Open C and DADGAD
 • The string you're tuning is highlighted, and the app remembers your last tuning
 • Tap any string to hear its note and tune by ear
 • A steady needle with a clear in-tune zone

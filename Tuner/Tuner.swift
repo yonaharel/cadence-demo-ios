@@ -12,7 +12,10 @@ final class Tuner {
     private(set) var hearing = false
     /// Cents per buffer, oldest first; nil where nothing confident was heard.
     private(set) var history: [Double?] = []
-    var a4 = 440.0
+    var a4 = 440.0 { didSet { // note and trace were measured against the old A4; demo keeps its fixed flat line
+        guard demo == 0 else { return }
+        history = []; if let n = note { note = Note(frequency: n.frequency, a4: a4) }
+    } }
     static let historyLength = 60 // ~5 s at 4096 samples / 48 kHz
 
     private let engine = AVAudioEngine()
@@ -57,6 +60,7 @@ final class Tuner {
         engine.stop()
         try? AVAudioSession.sharedInstance().setActive(false)
         state = .idle
+        history = []; smoother.reset(); quietFrames = 0; hearing = false // resume with a gap, not joined to the old trace
     }
 
     /// Built outside the main actor: the tap runs on an audio thread.
@@ -88,6 +92,7 @@ final class Tuner {
 
     // shortcut: one entry per buffer, so the strip steps ~12×/s; move to timestamps + TimelineView if it looks choppy
     private func record(_ cents: Double?) {
+        if cents == nil, !history.contains(where: { $0 != nil }) { return } // already blank; don't re-render
         history = Array((history + [cents]).suffix(Self.historyLength))
     }
 }

@@ -78,11 +78,15 @@ struct A4Control: View {
                     Stepper("\(a4) Hz", value: $a4, in: 415...466)
                     HStack {
                         ForEach([432, 440, 442], id: \.self) { hz in
-                            if hz == a4 {
-                                Button("\(hz)") { a4 = hz }.buttonStyle(.borderedProminent)
-                            } else {
-                                Button("\(hz)") { a4 = hz }.buttonStyle(.bordered)
+                            Group {
+                                if hz == a4 {
+                                    Button("\(hz)") { a4 = hz }.buttonStyle(.borderedProminent)
+                                } else {
+                                    Button("\(hz)") { a4 = hz }.buttonStyle(.bordered)
+                                }
                             }
+                            .accessibilityLabel("\(hz) hertz")
+                            .accessibilityAddTraits(hz == a4 ? .isSelected : [])
                         }
                     }
                 }
@@ -203,10 +207,10 @@ struct History: View {
             for (i, c) in cents.enumerated() {
                 guard let c else { gap = true; continue }
                 let p = CGPoint(x: size.width * CGFloat(i + 1 + Tuner.historyLength - cents.count) / CGFloat(Tuner.historyLength), y: y(c))
-                if gap { line.move(to: p) } else { line.addLine(to: p) }
+                if gap { line.move(to: p); line.addLine(to: p) } else { line.addLine(to: p) } // a lone point draws as a dot
                 gap = false
             }
-            ctx.stroke(line, with: .color(.accentColor), lineWidth: 2)
+            ctx.stroke(line, with: .color(.accentColor), style: StrokeStyle(lineWidth: 2, lineCap: .round))
         }
         .frame(height: 56)
         .accessibilityHidden(true)

@@ -151,6 +151,19 @@ struct A4Ruler: View {
             Text("\(a4) Hz").font(.title.weight(.semibold).monospacedDigit())
                 .contentTransition(.numericText(value: Double(a4)))
                 .onTapGesture(count: 2) { a4 = 440 }
+                .frame(maxWidth: .infinity)
+                .overlay(alignment: .trailing) { // beside the value, so the number stays centred over the ruler
+                    if a4 != 440 {
+                        Button { withAnimation { a4 = 440 } } label: {
+                            Label("440", systemImage: "arrow.counterclockwise").font(.footnote.weight(.semibold))
+                        }
+                        .buttonStyle(.bordered)
+                        .buttonBorderShape(.capsule)
+                        .accessibilityLabel("Reset to 440 hertz")
+                        .transition(.scale.combined(with: .opacity))
+                    }
+                }
+                .animation(.spring(response: 0.3, dampingFraction: 0.8), value: a4 == 440)
             GeometryReader { geo in
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 0) {

@@ -10,6 +10,7 @@ struct A4Ruler: View {
         VStack(spacing: 6) {
             Text("\(a4) Hz").font(.title.weight(.semibold).monospacedDigit())
                 .contentTransition(.numericText(value: Double(a4)))
+                .animation(.snappy(duration: 0.25), value: a4) // numericText only rolls inside an animation; dragging changes a4 without one
                 .onTapGesture(count: 2) { a4 = 440 }
                 .frame(maxWidth: .infinity)
                 .overlay(alignment: .trailing) { // beside the value, so the number stays centred over the ruler

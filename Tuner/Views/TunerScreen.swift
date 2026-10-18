@@ -10,7 +10,9 @@ struct TunerScreen: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Button { settingsOpen = true } label: {
+            Button {
+                settingsOpen = true
+            } label: {
                 Label(model.summary, systemImage: "slider.horizontal.3").font(.subheadline.monospacedDigit())
             }
             .glassPill()
@@ -19,7 +21,7 @@ struct TunerScreen: View {
             .sheet(isPresented: $settingsOpen) {
                 SettingsSheet(model: model)
                     .presentationDetents([.medium, .large])
-                    .presentationBackgroundInteraction(.enabled(upThrough: .medium)) // keep tuning while adjusting
+                    .presentationBackgroundInteraction(.enabled(upThrough: .medium))  // keep tuning while adjusting
             }
             Strings(tuning: model.tuning, active: model.activeString, play: model.play)
                 .padding(.top, 12)

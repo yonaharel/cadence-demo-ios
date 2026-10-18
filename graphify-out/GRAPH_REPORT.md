@@ -1,9 +1,9 @@
 # Graph Report - demo-ios  (2026-10-19)
 
 ## Corpus Check
-- 29 files · ~37,173 words
+- 29 files · ~37,178 words
 - Verdict: corpus is large enough that graph structure adds value.
-- Unclassified: 6 file(s) not represented in the graph (top: (none) 1, .xcconfig 1, .pbxproj 1)
+- Unclassified: 8 file(s) not represented in the graph (top: (none) 3, .xcconfig 1, .pbxproj 1)
 
 ## Summary
 - 215 nodes · 341 edges · 14 communities (11 shown, 3 thin omitted)
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `172ed335`
+- Built from commit: `1391c2a5`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 

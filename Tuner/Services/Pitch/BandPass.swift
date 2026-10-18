@@ -26,7 +26,7 @@ struct BandPass {
 
     private var highPass: Biquad, lowPass: Biquad
 
-    init(sampleRate: Double, low: Double = 55, high: Double = 1300) { // 55 Hz stays below C2 at A4=415 (61.7 Hz)
+    init(sampleRate: Double, low: Double = 55, high: Double = 1300) {  // 55 Hz stays below C2 at A4=415 (61.7 Hz)
         highPass = Biquad(sampleRate: sampleRate, cutoff: low, highPass: true)
         lowPass = Biquad(sampleRate: sampleRate, cutoff: high, highPass: false)
     }

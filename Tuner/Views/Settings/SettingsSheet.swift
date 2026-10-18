@@ -17,7 +17,9 @@ struct SettingsSheet: View {
                 VStack(spacing: 6) {
                     LevelMeter(level: model.level, threshold: model.listeningLevel)
                     Slider(value: Binding(model.$sensitivity), in: 0...1).accessibilityLabel("Sensitivity")
-                    HStack { Text("Loud room"); Spacer(); Text("Quiet strings") }.font(.caption).foregroundStyle(.secondary)
+                    HStack {
+                        Text("Loud room"); Spacer(); Text("Quiet strings")
+                    }.font(.caption).foregroundStyle(.secondary)
                 }
             } header: {
                 Text("Sensitivity")
@@ -25,6 +27,6 @@ struct SettingsSheet: View {
                 Text("Pluck a string: the bar should pass the line. Turn it down if the room keeps setting it off.")
             }
         }
-        .scrollContentBackground(.hidden) // let the sheet's glass show through
+        .scrollContentBackground(.hidden)  // let the sheet's glass show through
     }
 }

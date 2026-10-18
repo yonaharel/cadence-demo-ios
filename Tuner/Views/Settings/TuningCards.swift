@@ -10,7 +10,9 @@ struct TuningCards: View {
                 HStack(spacing: 8) {
                     ForEach(Tuning.allCases) { t in
                         let notes = t.strings.map { Note(midi: $0).name }.joined(separator: " ")
-                        Button { tuning = t } label: {
+                        Button {
+                            tuning = t
+                        } label: {
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(t.name).font(.subheadline.weight(.semibold))
                                 Text(notes).font(.caption.monospaced()).foregroundStyle(.secondary)

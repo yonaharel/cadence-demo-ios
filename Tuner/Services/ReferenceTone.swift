@@ -18,10 +18,10 @@ final class ReferenceTone {
             let (frequency, count) = pluck.withLock { $0 }
             if count != playing { playing = count; phase = 0; time = 0 }
             for i in 0..<Int(frames) {
-                let envelope = frequency > 0 ? min(time / 0.005, 1) * exp(-time / 0.8) : 0 // 5 ms attack, rings ~2 s
+                let envelope = frequency > 0 ? min(time / 0.005, 1) * exp(-time / 0.8) : 0  // 5 ms attack, rings ~2 s
                 var x = 0.0
                 for h in 1...6 { x += sin(phase * Double(h)) / Double(h) }
-                let sample = Float(0.45 * envelope * x) // peaks below 0.9
+                let sample = Float(0.45 * envelope * x)  // peaks below 0.9
                 phase = (phase + 2 * .pi * frequency / rate).truncatingRemainder(dividingBy: 2 * .pi)
                 time += 1 / rate
                 for buffer in UnsafeMutableAudioBufferListPointer(output) { buffer.mData!.assumingMemoryBound(to: Float.self)[i] = sample }

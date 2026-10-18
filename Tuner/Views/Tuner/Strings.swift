@@ -10,7 +10,9 @@ struct Strings: View {
         HStack(spacing: 12) {
             ForEach(tuning.strings, id: \.self) { midi in
                 let note = Note(midi: midi)
-                Button { play(midi) } label: {
+                Button {
+                    play(midi)
+                } label: {
                     Text("\(note.name)\(Text("\(note.octave)").font(.caption2))")
                         .font(.headline)
                         .frame(width: 46, height: 46)

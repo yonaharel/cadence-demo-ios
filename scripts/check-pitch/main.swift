@@ -33,10 +33,10 @@ for a4 in [432.0, 442.0] {
     }
 }
 precondition(abs(Note(frequency: 110, a4: 432).cents - 31.8) < 0.2, "440-tuned A2 is sharp at 432")
-var seed: UInt64 = 0x9E3779B97F4A7C15
+var seed: UInt64 = 0x9E37_79B9_7F4A_7C15
 func noise(_ count: Int, amplitude: Float) -> [Float] {
     (0..<count).map { _ in
-        seed = seed &* 6364136223846793005 &+ 1442695040888963407
+        seed = seed &* 6_364_136_223_846_793_005 &+ 1_442_695_040_888_963_407
         return amplitude * (Float(seed >> 40) / Float(1 << 24) * 2 - 1)
     }
 }
@@ -86,7 +86,7 @@ for f in [300.0, 500, 300, 500, 300, 500] { precondition(flicker.add(f) == nil, 
 var fresh = Smoother()
 precondition(fresh.add(82.4) != nil, "first reading after reset is shown")
 // Sensitivity: 0 is strict for a loud room, 1 hears quiet strings.
-let quietA = tone(110).map { $0 * 0.02 } // RMS ≈ 0.009, a softly picked string
+let quietA = tone(110).map { $0 * 0.02 }  // RMS ≈ 0.009, a softly picked string
 precondition(Note(frequency: detectPitch(quietA, sampleRate: rate)!).midi == 45, "quiet string heard at the default sensitivity")
 precondition(detectPitch(quietA, sampleRate: rate, sensitivity: 0) == nil, "quiet string ignored in loud-room mode")
 precondition(detectPitch(noise(4096, amplitude: 0.3), sampleRate: rate, sensitivity: 1) == nil, "noise still rejected at full sensitivity")

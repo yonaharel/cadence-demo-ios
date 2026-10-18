@@ -7,7 +7,7 @@ struct LevelMeter: View {
 
     var body: some View {
         GeometryReader { geo in
-            let x = { (v: Float) in geo.size.width * CGFloat(min(max((log10(max(v, 1e-4)) + 3) / 2.5, 0), 1)) } // 0.001 to ~0.3
+            let x = { (v: Float) in geo.size.width * CGFloat(min(max((log10(max(v, 1e-4)) + 3) / 2.5, 0), 1)) }  // 0.001 to ~0.3
             ZStack(alignment: .leading) {
                 Capsule().fill(Color.secondary.opacity(0.2))
                 Capsule().fill(level > threshold ? Color.green : Color.secondary).frame(width: x(level))

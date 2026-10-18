@@ -1,6 +1,6 @@
 import Foundation
 
-/// The nearest equal-tempered note to a frequency (A4 = 440 Hz), and how far off it is in cents.
+/// The nearest equal-tempered note to a frequency, relative to `a4` (440 Hz unless set), and how far off it is in cents.
 struct Note: Equatable {
     static let names = ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"]
 
@@ -8,14 +8,14 @@ struct Note: Equatable {
     let cents: Double
     let frequency: Double
 
-    init(frequency: Double) {
-        let exact = 69 + 12 * log2(frequency / 440)
+    init(frequency: Double, a4: Double = 440) {
+        let exact = 69 + 12 * log2(frequency / a4)
         midi = Int(exact.rounded())
         cents = (exact - Double(midi)) * 100
         self.frequency = frequency
     }
 
-    init(midi: Int) { self.init(frequency: 440 * pow(2, Double(midi - 69) / 12)) }
+    init(midi: Int, a4: Double = 440) { self.init(frequency: a4 * pow(2, Double(midi - 69) / 12), a4: a4) }
 
     var name: String { Note.names[((midi % 12) + 12) % 12] }
     var octave: Int { midi / 12 - 1 }

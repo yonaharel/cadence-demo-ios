@@ -25,4 +25,12 @@ precondition(Note(frequency: 73.4).nearestString(in: .dropD) == 38, "low D in Dr
 for t in Tuning.allCases {
     precondition(t.strings.count == 6 && t.strings == t.strings.sorted() && Set(t.strings).count == 6, "\(t.name) strings")
 }
+for a4 in [432.0, 442.0] {
+    for midi in Tuning.standard.strings {
+        let f = Note(midi: midi, a4: a4).frequency
+        let note = Note(frequency: detectPitch(tone(f), sampleRate: rate)!, a4: a4)
+        precondition(note.midi == midi && abs(note.cents) < 1, "A4=\(a4) string \(midi): \(note)")
+    }
+}
+precondition(abs(Note(frequency: 110, a4: 432).cents - 31.8) < 0.2, "440-tuned A2 is sharp at 432")
 print("pitch detection ok")

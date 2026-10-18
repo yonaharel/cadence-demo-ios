@@ -35,7 +35,7 @@ struct ContentView: View {
             case .failed(let reason):
                 Unavailable(message: "The microphone couldn't start: \(reason)", action: nil, perform: {})
             default:
-                Reading(note: tuner.note, hearing: tuner.hearing)
+                Reading(note: tuner.note, hearing: tuner.hearing, history: tuner.history)
             }
             Spacer()
             Text("Version \(version) (\(build))")
@@ -82,6 +82,7 @@ struct Strings: View {
 struct Reading: View {
     let note: Note?
     let hearing: Bool
+    let history: [Double?]
 
     private var inTune: Bool { abs(note?.cents ?? 99) <= 5 }
     private var advice: String {
@@ -98,6 +99,7 @@ struct Reading: View {
             }
             .contentTransition(.numericText())
             Needle(cents: hearing ? note?.cents : nil, inTune: inTune)
+            History(cents: history)
             VStack(spacing: 6) {
                 Text(advice).font(.title2.weight(.semibold)).foregroundStyle(hearing && inTune ? Color.green : Color.primary)
                 if let note {
@@ -140,6 +142,31 @@ struct Needle: View {
             .animation(.spring(response: 0.25, dampingFraction: 0.8), value: cents)
         }
         .frame(height: 72)
+        .accessibilityHidden(true)
+    }
+}
+
+/// The last few seconds of cents, newest at the right; gaps where nothing confident was heard.
+struct History: View {
+    let cents: [Double?]
+
+    var body: some View {
+        Canvas { ctx, size in
+            let y = { (c: Double) in size.height / 2 - CGFloat(max(-50, min(50, c)) / 50) * (size.height / 2) }
+            ctx.fill(Path(CGRect(x: 0, y: y(5), width: size.width, height: y(-5) - y(5))), with: .color(.green.opacity(0.25)))
+            ctx.stroke(Path { $0.move(to: CGPoint(x: 0, y: y(0))); $0.addLine(to: CGPoint(x: size.width, y: y(0))) },
+                       with: .color(.secondary.opacity(0.4)), lineWidth: 1)
+            var line = Path()
+            var gap = true
+            for (i, c) in cents.enumerated() {
+                guard let c else { gap = true; continue }
+                let p = CGPoint(x: size.width * CGFloat(i + 1 + Tuner.historyLength - cents.count) / CGFloat(Tuner.historyLength), y: y(c))
+                if gap { line.move(to: p) } else { line.addLine(to: p) }
+                gap = false
+            }
+            ctx.stroke(line, with: .color(.accentColor), lineWidth: 2)
+        }
+        .frame(height: 56)
         .accessibilityHidden(true)
     }
 }

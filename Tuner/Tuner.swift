@@ -10,6 +10,9 @@ final class Tuner {
     private(set) var note: Note?
     /// False once the string has rung out; the last note stays on screen, dimmed.
     private(set) var hearing = false
+    /// Cents per buffer, oldest first; nil where nothing confident was heard.
+    private(set) var history: [Double?] = []
+    static let historyLength = 60 // ~5 s at 4096 samples / 48 kHz
 
     private let engine = AVAudioEngine()
     private var smoother = Smoother()
@@ -20,7 +23,9 @@ final class Tuner {
 
     init() {
         // App Store screenshots: launch with `-demoFrequency 108.9` for a fixed reading without the microphone.
-        if demo > 0 { note = Note(frequency: demo); hearing = true; state = .listening }
+        if demo > 0 { note = Note(frequency: demo); hearing = true; state = .listening
+            history = Array(repeating: note!.cents, count: Self.historyLength)
+        }
     }
 
     func start() async {
@@ -66,14 +71,23 @@ final class Tuner {
 
     private func heard(_ pitch: Double?) {
         guard let pitch else {
+            record(nil)
             quietFrames += 1
             if quietFrames > 10 { hearing = false; smoother.reset() }
             return
         }
         quietFrames = 0
         hearing = true
-        guard let f = smoother.add(pitch) else { return }
-        note = Note(frequency: f)
+        guard let f = smoother.add(pitch) else { record(nil); return }
+        let new = Note(frequency: f)
+        if new.midi != note?.midi { history = [] }
+        record(new.cents)
+        note = new
+    }
+
+    // shortcut: one entry per buffer, so the strip steps ~12×/s; move to timestamps + TimelineView if it looks choppy
+    private func record(_ cents: Double?) {
+        history = Array((history + [cents]).suffix(Self.historyLength))
     }
 }
 

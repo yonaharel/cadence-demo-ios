@@ -1,27 +1,26 @@
+import Combine
 import Foundation
 import Observation
+import Sharing
 
 /// What the tuner screen and its settings show and do: the saved setup, the live reading, and playing a string.
 @MainActor @Observable
 final class TunerViewModel {
-    var tuning: Tuning { didSet { defaults.set(tuning.rawValue, forKey: "tuning") } }
+    // Saved in app storage under the keys the app has always used, so updating keeps your setup.
+    @ObservationIgnored @Shared(.appStorage("tuning")) var tuning = Tuning.standard
     /// The reference pitch, 415...466 Hz.
-    var a4: Int { didSet { defaults.set(a4, forKey: "a4"); applyA4() } }
+    @ObservationIgnored @Shared(.appStorage("a4")) var a4 = 440
     /// 0 (loud room) to 1 (quiet strings).
-    var sensitivity: Double { didSet { defaults.set(sensitivity, forKey: "sensitivity"); listener.sensitivity = Float(sensitivity) } }
+    @ObservationIgnored @Shared(.appStorage("sensitivity")) var sensitivity = 0.7
 
     private let listener = PitchListener()
     private let tone = ReferenceTone()
-    private let defaults: UserDefaults
+    @ObservationIgnored private var subscriptions: Set<AnyCancellable> = []
 
-    init(defaults: UserDefaults = .standard) {
-        self.defaults = defaults
-        // The keys and values the app saved before this view model existed. Clamped so a corrupt value can't reach Note.
-        tuning = defaults.string(forKey: "tuning").flatMap(Tuning.init(rawValue:)) ?? .standard
-        a4 = min(max(defaults.object(forKey: "a4") as? Int ?? 440, 415), 466)
-        sensitivity = min(max(defaults.object(forKey: "sensitivity") as? Double ?? 0.7, 0), 1)
-        applyA4()
-        listener.sensitivity = Float(sensitivity)
+    init() {
+        // Publishers send the current value first, so these also apply the saved settings at launch.
+        $a4.publisher.sink { [weak self] a4 in self?.apply(a4: a4) }.store(in: &subscriptions)
+        $sensitivity.publisher.sink { [weak self] s in self?.listener.sensitivity = Float(min(max(s, 0), 1)) }.store(in: &subscriptions)
     }
 
     // The live reading, passed through from the listener.
@@ -41,8 +40,10 @@ final class TunerViewModel {
     func stop() { listener.stop() }
     func play(_ string: Int) { tone.play(string) }
 
-    private func applyA4() {
-        listener.a4 = Double(a4)
-        tone.a4 = Double(a4)
+    /// Clamped so a corrupt saved value can't reach Note.
+    private func apply(a4: Int) {
+        let hz = Double(min(max(a4, 415), 466))
+        listener.a4 = hz
+        tone.a4 = hz
     }
 }

@@ -3,6 +3,10 @@ options:
   bundleIdPrefix: com.yonaharel
   deploymentTarget:
     iOS: "17.0"
+packages:
+  Sharing:
+    url: https://github.com/pointfreeco/swift-sharing
+    from: 2.10.0
 configFiles:
   Debug: Config/Version.xcconfig
   Release: Config/Version.xcconfig
@@ -13,6 +17,8 @@ targets:
     sources:
       - path: Tuner
         type: syncedFolder # Xcode buildable folder: new files are picked up without editing the project
+    dependencies:
+      - package: Sharing
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.yonaharel.cadencedemo

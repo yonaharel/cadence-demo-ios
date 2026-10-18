@@ -8,7 +8,7 @@ DD=$(mktemp -d)
 BUNDLE=com.yonaharel.cadencedemo
 
 xcodebuild build -project Tuner.xcodeproj -scheme Tuner -configuration Debug \
-  -destination 'generic/platform=iOS Simulator' -derivedDataPath "$DD" -quiet
+  -destination 'generic/platform=iOS Simulator' -derivedDataPath "$DD" -skipMacroValidation -quiet
 APP="$DD/Build/Products/Debug-iphonesimulator/Tuner.app"
 
 SHOTS=(

@@ -126,7 +126,7 @@ struct TuningCards: View {
                             .selectionHighlight(t == tuning, cornerRadius: 14)
                             .foregroundStyle(t == tuning ? Color.accentColor : Color.primary)
                         }
-                        .buttonStyle(.plain)
+                        .buttonStyle(.pressScale)
                         .id(t)
                         .accessibilityLabel("\(t.name), \(notes)")
                         .accessibilityAddTraits(t == tuning ? .isSelected : [])
@@ -186,12 +186,12 @@ struct A4Ruler: View {
     }
 }
 
-/// Selection that grows in: a tinted circle expands from the centre to fill the shape, then the border draws itself round.
+/// Selection that grows in: a tinted circle expands from the centre to fill the shape, and the border fades in as it lands.
 struct SelectionHighlight: ViewModifier {
     let isSelected: Bool
     let cornerRadius: CGFloat
     @State private var fill: CGFloat = 0
-    @State private var border: CGFloat = 0
+    @State private var border = 0.0
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     func body(content: Content) -> some View {
@@ -207,19 +207,32 @@ struct SelectionHighlight: ViewModifier {
                 }
                 .clipShape(shape)
             }
-            .overlay(shape.inset(by: 1).trim(from: 0, to: border).stroke(Color.accentColor, style: StrokeStyle(lineWidth: 2, lineCap: .round)))
+            .overlay(shape.strokeBorder(Color.accentColor, lineWidth: 2).opacity(border))
             .onAppear { fill = isSelected ? 1 : 0; border = fill }
             .onChange(of: isSelected) { _, selected in
                 if reduceMotion {
                     withAnimation(.easeOut(duration: 0.2)) { fill = selected ? 1 : 0; border = fill }
                 } else if selected {
                     withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) { fill = 1 }
-                    withAnimation(.easeInOut(duration: 0.4).delay(0.18)) { border = 1 } // draws once the fill has mostly landed
+                    withAnimation(.easeOut(duration: 0.15).delay(0.2)) { border = 1 } // as the fill lands
                 } else {
                     withAnimation(.easeOut(duration: 0.2)) { fill = 0; border = 0 }
                 }
             }
     }
+}
+
+/// Shrinks a little while pressed, so a tap feels physical.
+struct PressScale: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.94 : 1)
+            .animation(.spring(response: 0.25, dampingFraction: 0.6), value: configuration.isPressed)
+    }
+}
+
+extension ButtonStyle where Self == PressScale {
+    static var pressScale: PressScale { PressScale() }
 }
 
 extension View {
@@ -265,10 +278,11 @@ struct Strings: View {
                     Text("\(note.name)\(Text("\(note.octave)").font(.caption2))")
                         .font(.headline)
                         .frame(width: 46, height: 46)
-                        .background(Circle().fill(midi == active ? Color.accentColor : Color.secondary.opacity(0.15)))
-                        .foregroundStyle(midi == active ? Color.white : Color.primary)
+                        .background(Circle().fill(Color.secondary.opacity(0.15)))
+                        .selectionHighlight(midi == active, cornerRadius: 23)
+                        .foregroundStyle(midi == active ? Color.accentColor : Color.primary)
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.pressScale)
                 .accessibilityLabel("\(note.name) \(note.octave) string\(midi == active ? ", tuning" : "")")
                 .accessibilityHint("Plays the note")
             }

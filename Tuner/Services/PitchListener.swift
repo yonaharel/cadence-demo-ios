@@ -4,7 +4,7 @@ import os
 
 /// Listens to the microphone and reports the note being played. Audio is analysed on the device and never stored.
 @MainActor @Observable
-final class Tuner {
+final class PitchListener {
     enum State: Equatable { case idle, listening, denied, failed(String) }
 
     private(set) var state = State.idle

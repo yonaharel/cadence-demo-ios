@@ -2,23 +2,20 @@ import SwiftUI
 
 /// Tuning, reference pitch and sensitivity, in a sheet the tuner keeps listening behind (glass on iOS 26).
 struct SettingsSheet: View {
-    @Binding var tuning: Tuning
-    @Binding var a4: Int
-    @Binding var sensitivity: Double
-    let tuner: Tuner
+    @Bindable var model: TunerViewModel
 
     var body: some View {
         Form {
             Section("Tuning") {
-                TuningCards(tuning: $tuning).listRowInsets(EdgeInsets())
+                TuningCards(tuning: $model.tuning).listRowInsets(EdgeInsets())
             }
             Section("Reference pitch") {
-                A4Ruler(a4: $a4)
+                A4Ruler(a4: $model.a4)
             }
             Section {
                 VStack(spacing: 6) {
-                    LevelMeter(level: tuner.level, threshold: minimumLevel(sensitivity: Float(sensitivity)))
-                    Slider(value: $sensitivity, in: 0...1).accessibilityLabel("Sensitivity")
+                    LevelMeter(level: model.level, threshold: model.listeningLevel)
+                    Slider(value: $model.sensitivity, in: 0...1).accessibilityLabel("Sensitivity")
                     HStack { Text("Loud room"); Spacer(); Text("Quiet strings") }.font(.caption).foregroundStyle(.secondary)
                 }
             } header: {

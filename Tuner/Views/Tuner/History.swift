@@ -14,7 +14,7 @@ struct History: View {
             var gap = true
             for (i, c) in cents.enumerated() {
                 guard let c else { gap = true; continue }
-                let p = CGPoint(x: size.width * CGFloat(i + 1 + Tuner.historyLength - cents.count) / CGFloat(Tuner.historyLength), y: y(c))
+                let p = CGPoint(x: size.width * CGFloat(i + 1 + PitchListener.historyLength - cents.count) / CGFloat(PitchListener.historyLength), y: y(c))
                 if gap { line.move(to: p); line.addLine(to: p) } else { line.addLine(to: p) } // a lone point draws as a dot
                 gap = false
             }

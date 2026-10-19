@@ -102,6 +102,7 @@ git config merge.graphify-report.driver true
 
 - The version lives in `Config/Version.xcconfig` (`MARKETING_VERSION`).
 - `.github/workflows/build.yml` is started by Cadence with a version and build number. It checks the version, lints, then archives and uploads to App Store Connect through `scripts/ci.sh`.
+- Signing needs no certificates in the repo or on the runner. `scripts/ci.sh` archives unsigned, and `-exportArchive` signs with Apple's cloud-managed distribution certificate through the App Store Connect API key (secrets `ASC_KEY_P8`, `ASC_KEY_ID`, `ASC_ISSUER_ID`). The key must have the Admin role, or App Manager with "Access to Cloud Managed Distribution Certificate". Local Xcode builds keep automatic signing.
 - `scripts/screenshots.sh` retakes the App Store screenshots in `metadata/screenshots/en-US` on the 6.9" and 6.3" simulators.
 - App Store text lives in `metadata/en-US`, and App Review notes in `metadata/review_information`.
 - The privacy and support pages are `docs/privacy.html` and `docs/support.html`, served by GitHub Pages.

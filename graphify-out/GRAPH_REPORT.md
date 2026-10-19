@@ -1,9 +1,9 @@
-# Graph Report - wt  (2026-10-19)
+# Graph Report - cadence-demo-ios  (2026-10-19)
 
 ## Corpus Check
-- 34 files · ~39,550 words
+- 34 files · ~39,664 words
 - Verdict: corpus is large enough that graph structure adds value.
-- Unclassified: 10 file(s) not represented in the graph (top: (none) 5, .xcconfig 1, .pbxproj 1)
+- Unclassified: 9 file(s) not represented in the graph (top: (none) 4, .xcconfig 1, .pbxproj 1)
 
 ## Summary
 - 278 nodes · 421 edges · 18 communities (13 shown, 5 thin omitted)
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `742ef396`
+- Built from commit: `29151537`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 

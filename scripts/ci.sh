@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Stand-in for CI: archive, sign, upload to App Store Connect, and report the build to Cadence.
-# Signing is automatic: Xcode creates the distribution certificate and profile through the API key.
+# The archive is unsigned, so no development certificate is needed; export signs it through the API key
+# with Apple's cloud-managed distribution certificate and an automatic App Store profile.
 #
 #   ASC_KEY_PATH=~/.appstoreconnect/private_keys/AuthKey_XXXX.p8 ASC_KEY_ID=XXXX ASC_ISSUER_ID=... \
 #   CADENCE_TOKEN=... scripts/ci.sh
@@ -27,10 +28,11 @@ trap 'report failed' ERR
 report running
 echo "Building $VERSION ($BUILD) from $BRANCH @ ${SHA:0:7}"
 
-AUTH=(-allowProvisioningUpdates -authenticationKeyPath "$ASC_KEY_PATH" -authenticationKeyID "$ASC_KEY_ID" -authenticationKeyIssuerID "$ASC_ISSUER_ID")
+# Signing the archive would mint an Apple Development certificate on every fresh runner.
 xcodebuild archive -project Tuner.xcodeproj -scheme Tuner -configuration Release \
   -destination 'generic/platform=iOS' -archivePath "$OUT/Tuner.xcarchive" \
-  CURRENT_PROJECT_VERSION="$BUILD" "${AUTH[@]}" -skipMacroValidation -quiet # swift-sharing's macros
+  CURRENT_PROJECT_VERSION="$BUILD" CODE_SIGNING_ALLOWED=NO -skipMacroValidation -quiet # swift-sharing's macros
+AUTH=(-allowProvisioningUpdates -authenticationKeyPath "$ASC_KEY_PATH" -authenticationKeyID "$ASC_KEY_ID" -authenticationKeyIssuerID "$ASC_ISSUER_ID")
 xcodebuild -exportArchive -archivePath "$OUT/Tuner.xcarchive" \
   -exportOptionsPlist scripts/ExportOptions.plist -exportPath "$OUT/export" "${AUTH[@]}" -quiet
 

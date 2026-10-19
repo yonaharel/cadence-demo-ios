@@ -1,7 +1,7 @@
 # Graph Report - cadence-demo-ios  (2026-10-19)
 
 ## Corpus Check
-- 34 files · ~39,948 words
+- 34 files · ~40,034 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 9 file(s) not represented in the graph (top: (none) 4, .xcconfig 1, .pbxproj 1)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `2bcb9c59`
+- Built from commit: `d5512fbe`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 

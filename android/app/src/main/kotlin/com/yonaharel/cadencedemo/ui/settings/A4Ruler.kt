@@ -125,18 +125,7 @@ fun A4Ruler(a4: Int, onChange: (Int) -> Unit, modifier: Modifier = Modifier) {
                 fontWeight = FontWeight.SemiBold,
             )
             // Beside the value, so the number stays centred over the ruler.
-            AnimatedVisibility(
-                a4 != 440,
-                Modifier.align(Alignment.CenterEnd),
-                enter = scaleIn() + fadeIn(),
-                exit = scaleOut() + fadeOut(),
-            ) {
-                FilledTonalButton(onClick = { change(440) }, contentPadding = PaddingValues(horizontal = 12.dp)) {
-                    Icon(painterResource(R.drawable.ic_reset), contentDescription = null, Modifier.size(16.dp))
-                    Spacer(Modifier.width(4.dp))
-                    Text("440", style = MaterialTheme.typography.labelLarge)
-                }
-            }
+            ResetButton(a4 != 440, { change(440) }, Modifier.align(Alignment.CenterEnd))
         }
         Canvas(
             Modifier
@@ -172,6 +161,17 @@ fun A4Ruler(a4: Int, onChange: (Int) -> Unit, modifier: Modifier = Modifier) {
                 }
             }
             drawLine(accent, Offset(centre, 0f), Offset(centre, 23.dp.toPx()), 3.dp.toPx(), StrokeCap.Round)
+        }
+    }
+}
+
+@Composable
+private fun ResetButton(visible: Boolean, reset: () -> Unit, modifier: Modifier = Modifier) {
+    AnimatedVisibility(visible, modifier, enter = scaleIn() + fadeIn(), exit = scaleOut() + fadeOut()) {
+        FilledTonalButton(onClick = reset, contentPadding = PaddingValues(horizontal = 12.dp)) {
+            Icon(painterResource(R.drawable.ic_reset), contentDescription = null, Modifier.size(16.dp))
+            Spacer(Modifier.width(4.dp))
+            Text("440", style = MaterialTheme.typography.labelLarge)
         }
     }
 }

@@ -1,17 +1,17 @@
 # Graph Report - cadence-demo-ios  (2026-10-19)
 
 ## Corpus Check
-- 33 files · ~39,533 words
+- 34 files · ~39,948 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 9 file(s) not represented in the graph (top: (none) 4, .xcconfig 1, .pbxproj 1)
 
 ## Summary
-- 286 nodes · 435 edges · 15 communities (13 shown, 2 thin omitted)
+- 288 nodes · 436 edges · 16 communities (13 shown, 3 thin omitted)
 - Extraction: 84% EXTRACTED · 16% INFERRED · 0% AMBIGUOUS · INFERRED: 69 edges (avg confidence: 0.9)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `66ba7a36`
+- Built from commit: `2bcb9c59`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -19,7 +19,7 @@
 - Tuning
 - TunerViewModel
 - BandPass
-- TunerViewModel.swift
+- Foundation
 - SelectionHighlight
 - PitchListener
 - detectPitch
@@ -31,6 +31,7 @@
 - Strings
 - Twang
 - Instrument
+- resolve-graph-conflicts.sh
 
 ## God Nodes (most connected - your core abstractions)
 1. `Tuning` - 53 edges
@@ -59,7 +60,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (15 total, 2 thin omitted)
+## Communities (16 total, 3 thin omitted)
 
 ### Community 0 - "Tuning"
 Cohesion: 0.05
@@ -70,12 +71,12 @@ Cohesion: 0.10
 Nodes (12): TunerApp, .body, TunerViewModel, .hearing, .history, .level, .note, .state (+4 more)
 
 ### Community 2 - "BandPass"
-Cohesion: 0.14
-Nodes (7): Foundation, filtered(), noise(), tone(), BandPass, .low, Biquad
+Cohesion: 0.21
+Nodes (6): filtered(), noise(), tone(), BandPass, .low, Biquad
 
-### Community 3 - "TunerViewModel.swift"
-Cohesion: 0.25
-Nodes (5): AVFoundation, Combine, Observation, os, Sharing
+### Community 3 - "Foundation"
+Cohesion: 0.14
+Nodes (6): AVFoundation, Combine, Foundation, Observation, os, Sharing
 
 ### Community 4 - "SelectionHighlight"
 Cohesion: 0.14
@@ -86,11 +87,11 @@ Cohesion: 0.12
 Nodes (14): Better Tuner Implementation Plan, Global Constraints, Not covered here, Review Focus, Task 1: A4 reference in `Note`, Task 2: Band-pass filter, clarity bar and RMS floor, Task 3: `Smoother` — median plus outlier rejection, Task 4: Pitch history strip (+6 more)
 
 ### Community 6 - "detectPitch"
-Cohesion: 0.09
+Cohesion: 0.10
 Nodes (17): Anti-goals, Context, Current state (verified in code), Decided by Claude (user can override), Decided by the user, Goals, Left to the builder, Non-goals (this piece) (+9 more)
 
 ### Community 7 - "Note"
-Cohesion: 0.13
+Cohesion: 0.12
 Nodes (9): Note, .name, .octave, State, denied, failed, idle, listening (+1 more)
 
 ### Community 8 - "SwiftUI"
@@ -115,14 +116,14 @@ Nodes (14): Instrument, banjo, bass, fiveStringBass, guitar, .id, mandolin, .nam
 
 ## Knowledge Gaps
 - **76 isolated node(s):** `guitar`, `sevenString`, `twelveString`, `ukulele`, `mandolin` (+71 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 136 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **2 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 138 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **3 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Tuning` connect `Tuning` to `BandPass`, `detectPitch`, `Note`, `SwiftUI`, `Strings`, `Instrument`?**
-  _High betweenness centrality (0.347) - this node is a cross-community bridge._
+- **Why does `Tuning` connect `Tuning` to `Foundation`, `detectPitch`, `Note`, `SwiftUI`, `Strings`, `Instrument`?**
+  _High betweenness centrality (0.342) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `Tuning` (e.g. with `Current state (verified in code)` and `.body`) actually correct?**
   _`Tuning` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `guitar`, `sevenString`, `twelveString` to the rest of the system?**
@@ -130,7 +131,7 @@ _Questions this graph is uniquely positioned to answer:_
 - **Should `Tuning` be split into smaller, more focused modules?**
   _Cohesion score 0.05128205128205128 - nodes in this community are weakly interconnected._
 - **Why does `Current state (verified in code)` connect `detectPitch` to `Tuning`, `PitchListener`, `Note`, `SwiftUI`, `Strings`?**
-  _High betweenness centrality (0.194) - this node is a cross-community bridge._
+  _High betweenness centrality (0.191) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `TunerViewModel` (e.g. with `TunerApp` and `ReferenceTone`) actually correct?**
   _`TunerViewModel` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **Should `TunerViewModel` be split into smaller, more focused modules?**

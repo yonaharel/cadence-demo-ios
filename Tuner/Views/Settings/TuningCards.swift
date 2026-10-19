@@ -8,7 +8,7 @@ struct TuningCards: View {
         ScrollViewReader { proxy in
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
-                    ForEach(tuning.instrument.tunings) { t in
+                    ForEach(Array(tuning.instrument.tunings.enumerated()), id: \.element) { index, t in
                         let notes = t.strings.map { Note(midi: $0).name }.joined(separator: " ")
                         Button {
                             tuning = t
@@ -23,6 +23,7 @@ struct TuningCards: View {
                             .foregroundStyle(t == tuning ? Color.accentColor : Color.primary)
                         }
                         .buttonStyle(.pressScale)
+                        .staggeredAppear(index: index)
                         .id(t)
                         .accessibilityLabel("\(t.name), \(notes)")
                         .accessibilityAddTraits(t == tuning ? .isSelected : [])

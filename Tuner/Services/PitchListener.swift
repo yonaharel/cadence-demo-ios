@@ -72,6 +72,8 @@ final class PitchListener {
             let session = AVAudioSession.sharedInstance()
             // playAndRecord so ReferenceTone can play while listening; the speaker, not the earpiece.
             try session.setCategory(.playAndRecord, mode: .measurement, options: .defaultToSpeaker)
+            // iOS silences haptics while an app records; the tuner always records, so opt back in.
+            try session.setAllowHapticsAndSystemSoundsDuringRecording(true)
             try session.setActive(true)
             let input = engine.inputNode
             let format = input.outputFormat(forBus: 0)

@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.yonaharel.cadencedemo"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.yonaharel.cadencedemo"

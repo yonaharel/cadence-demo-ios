@@ -47,7 +47,7 @@ Two Gradle modules:
 - **`:core`** — plain Kotlin/JVM, no Android dependency. Everything that's maths: notes, tunings, YIN, filter,
   smoother. Unit-tested on the JVM, so it runs anywhere (and in CI) in seconds. A straight port of the Swift so the two
   apps hear the same thing; thresholds are copied, not re-tuned.
-- **`:app`** — Android application (min SDK 26, target 36), Jetpack Compose + Material 3, single activity, MVVM like
+- **`:app`** — Android application (min SDK 26, target 36, compiled against 37), Jetpack Compose + Material 3, single activity, MVVM like
   iOS: `PitchListener` and `ReferenceTone` are services, `TunerViewModel` owns them plus the saved settings, the
   composables are stateless and take what they show.
 

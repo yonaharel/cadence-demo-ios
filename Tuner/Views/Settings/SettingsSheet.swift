@@ -17,6 +17,8 @@ struct SettingsSheet: View {
                 VStack(spacing: 6) {
                     LevelMeter(level: model.level, threshold: model.listeningLevel)
                     Slider(value: Binding(model.$sensitivity), in: 0...1).accessibilityLabel("Sensitivity")
+                        // A light tick every 10% of travel, not on every pixel of the drag.
+                        .sensoryFeedback(.selection, trigger: Int((model.sensitivity * 10).rounded()))
                     HStack {
                         Text("Loud room")
                         Spacer()

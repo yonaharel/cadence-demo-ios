@@ -84,6 +84,20 @@ make format
 
 Pull requests run `make lint` (`.github/workflows/lint.yml`), and so does the release build.
 
+## Knowledge graph
+
+`graphify-out/graph.json` and `GRAPH_REPORT.md` are committed so Claude can query the codebase. Set up once per clone, so the hooks keep the graph fresh and merges don't conflict on it:
+
+```bash
+graphify hook install
+```
+
+```bash
+git config merge.graphify-report.driver true
+```
+
+`.gitattributes` sends `graph.json` through graphify's union merge driver and keeps one side of `GRAPH_REPORT.md`, which the post-merge hook then regenerates. GitHub's own conflict check doesn't run custom merge drivers, so merge `develop` into a branch locally if a PR shows a conflict on these files.
+
 ## Releasing
 
 - The version lives in `Config/Version.xcconfig` (`MARKETING_VERSION`).

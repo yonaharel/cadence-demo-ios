@@ -6,7 +6,7 @@
 #   scripts/resolve-graph-conflicts.sh origin/develop
 set -euo pipefail
 BASE=${1:?usage: scripts/resolve-graph-conflicts.sh <base-ref>}
-cd "$(dirname "$0")/.."
+cd "$(git rev-parse --show-toplevel)" # the workflow runs a copy from outside the repo
 
 # Without the merge drivers configured this sees the same conflicts GitHub does.
 STATUS=0

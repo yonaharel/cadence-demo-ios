@@ -30,13 +30,16 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Older PR branches don't have the script, so run this branch's copy.
+          RESOLVE="$RUNNER_TEMP/resolve-graph-conflicts.sh"
+          cp scripts/resolve-graph-conflicts.sh "$RESOLVE"
           # Branches from forks can't be pushed to with this token.
           gh pr list --state open --json headRefName,baseRefName,isCrossRepository \
             --jq '.[] | select(.isCrossRepository | not) | "\(.headRefName) \(.baseRefName)"' |
             while read -r HEAD_BRANCH BASE_BRANCH; do
               echo "::group::$HEAD_BRANCH ← $BASE_BRANCH"
               git checkout -q -B "$HEAD_BRANCH" "origin/$HEAD_BRANCH"
-              scripts/resolve-graph-conflicts.sh "origin/$BASE_BRANCH" </dev/null
+              "$RESOLVE" "origin/$BASE_BRANCH" </dev/null
               git push origin "HEAD:refs/heads/$HEAD_BRANCH"
               echo "::endgroup::"
             done

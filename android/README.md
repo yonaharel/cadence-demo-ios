@@ -25,6 +25,14 @@ Open the folder in Android Studio and run the **app** configuration, or from the
 ./gradlew :app:installDebug
 ```
 
+### In the emulator on a Mac, without Android Studio
+
+```bash
+android/scripts/emulator.sh
+```
+
+It installs Google's command-line tools with Homebrew (and Java if needed), creates an Android 16 emulator, builds the app, installs it and opens it. The first run downloads a few GB. Add `--demo` to open it with a fixed reading instead of the microphone.
+
 ### Demo mode
 
 Start with a `demoFrequency` extra to show a fixed reading without the microphone, for example a slightly flat A string:

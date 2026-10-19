@@ -32,11 +32,19 @@ final class PitchListener {
             tapSensitivity.withLock { $0 = s }
         }
     }
+    /// The lowest pitch listened for, in Hz; it follows the tuning (see `Tuning.detectionFloor`).
+    var detectionFloor = 60.0 {
+        didSet {
+            let floor = detectionFloor
+            tapFloor.withLock { $0 = floor }
+        }
+    }
     static let historyLength = 60  // ~5 s at 4096 samples / 48 kHz
 
     private let engine = AVAudioEngine()
     private var smoother = Smoother()
     private let tapSensitivity = OSAllocatedUnfairLock(initialState: Float(0.7))  // read by the audio thread
+    private let tapFloor = OSAllocatedUnfairLock(initialState: 60.0)  // read by the audio thread
     private var quietFrames = 0
     private let demo = UserDefaults.standard.double(forKey: "demoFrequency")
     /// The permission alert makes the scene inactive then active, which calls start() again while the first call waits.
@@ -71,7 +79,7 @@ final class PitchListener {
             let format = input.outputFormat(forBus: 0)
             input.installTap(
                 onBus: 0, bufferSize: 4096, format: format,
-                block: Self.analyser(sampleRate: format.sampleRate, sensitivity: tapSensitivity) { [weak self] pitch, level in
+                block: Self.analyser(sampleRate: format.sampleRate, sensitivity: tapSensitivity, floor: tapFloor) { [weak self] pitch, level in
                     Task { @MainActor in
                         self?.level = level
                         self?.heard(pitch)
@@ -100,14 +108,16 @@ final class PitchListener {
 
     /// Built outside the main actor: the tap runs on an audio thread.
     private nonisolated static func analyser(
-        sampleRate: Double, sensitivity: OSAllocatedUnfairLock<Float>, report: @escaping @Sendable (Double?, Float) -> Void
+        sampleRate: Double, sensitivity: OSAllocatedUnfairLock<Float>, floor: OSAllocatedUnfairLock<Double>,
+        report: @escaping @Sendable (Double?, Float) -> Void
     ) -> AVAudioNodeTapBlock {
         var filter = BandPass(sampleRate: sampleRate)  // fresh per tap; keeps its state across buffers
         return { buffer, _ in
             guard let data = buffer.floatChannelData?[0] else { return }
             var samples = Array(UnsafeBufferPointer(start: data, count: Int(buffer.frameLength)))
             filter.process(&samples)
-            report(detectPitch(samples, sampleRate: sampleRate, sensitivity: sensitivity.withLock { $0 }), rms(samples))
+            let range = floor.withLock { $0 }...1200
+            report(detectPitch(samples, sampleRate: sampleRate, range: range, sensitivity: sensitivity.withLock { $0 }), rms(samples))
         }
     }
 

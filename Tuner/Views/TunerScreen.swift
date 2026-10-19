@@ -16,12 +16,11 @@ struct TunerScreen: View {
                 Label(model.summary, systemImage: "slider.horizontal.3").font(.subheadline.monospacedDigit())
             }
             .glassPill()
-            .accessibilityLabel("Settings: \(model.tuning.name), A4 \(model.a4) hertz")
+            .accessibilityLabel("Settings: \(model.tuningDescription), A4 \(model.a4) hertz")
             .padding(.top, 8)
             .sheet(isPresented: $settingsOpen) {
                 SettingsSheet(model: model)
                     .presentationDetents([.medium, .large])
-                    .presentationBackgroundInteraction(.enabled(upThrough: .medium))  // keep tuning while adjusting
             }
             Strings(tuning: model.tuning, active: model.activeString, play: model.play)
                 .padding(.top, 12)

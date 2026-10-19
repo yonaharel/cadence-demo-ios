@@ -1,0 +1,45 @@
+# graphify-out/graph.json and GRAPH_REPORT.md are rewritten whole on every change, so open pull requests
+# conflict on them whenever develop moves. This merges the base into each such branch and rebuilds the graph.
+# Pushes made with GITHUB_TOKEN don't start other workflows, so Lint doesn't rerun on the merge commit.
+name: Resolve graph conflicts
+
+on:
+  push:
+    branches: [develop]
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+permissions:
+  contents: write
+  pull-requests: read
+
+concurrency: graph-conflicts
+
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - run: pipx install graphifyy==0.9.92
+      - name: Merge the base into pull requests that conflict only on the graph
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Older PR branches don't have the script, so run this branch's copy.
+          RESOLVE="$RUNNER_TEMP/resolve-graph-conflicts.sh"
+          cp scripts/resolve-graph-conflicts.sh "$RESOLVE"
+          # Branches from forks can't be pushed to with this token.
+          gh pr list --state open --json headRefName,baseRefName,isCrossRepository \
+            --jq '.[] | select(.isCrossRepository | not) | "\(.headRefName) \(.baseRefName)"' |
+            while read -r HEAD_BRANCH BASE_BRANCH; do
+              echo "::group::$HEAD_BRANCH ← $BASE_BRANCH"
+              git checkout -q -B "$HEAD_BRANCH" "origin/$HEAD_BRANCH"
+              "$RESOLVE" "origin/$BASE_BRANCH" </dev/null
+              git push origin "HEAD:refs/heads/$HEAD_BRANCH"
+              echo "::endgroup::"
+            done

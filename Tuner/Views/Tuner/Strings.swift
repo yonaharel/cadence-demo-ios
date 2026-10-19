@@ -12,7 +12,7 @@ struct Strings: View {
 
     var body: some View {
         HStack(spacing: tuning.strings.count > 6 ? 8 : 12) {
-            ForEach(tuning.strings, id: \.self) { midi in
+            ForEach(Array(tuning.strings.enumerated()), id: \.element) { index, midi in
                 let note = Note(midi: midi)
                 let octave = tuning.octaveString(of: midi).map { Note(midi: $0) }
                 Button {
@@ -31,12 +31,14 @@ struct Strings: View {
                     .foregroundStyle(midi == active ? Color.accentColor : Color.primary)
                 }
                 .buttonStyle(.pressScale)
+                .staggeredAppear(index: index)
                 .accessibilityLabel(label(note: note, octave: octave, active: midi == active))
                 .accessibilityHint("Plays the note")
             }
         }
         .animation(.easeOut(duration: 0.15), value: active)
         .animation(.easeOut(duration: 0.15), value: tuning)
+        .id(tuning.instrument)  // a new instrument rebuilds the row, so its buttons spring in one after another
     }
 
     private func label(note: Note, octave: Note?, active: Bool) -> String {

@@ -21,7 +21,6 @@ struct TunerScreen: View {
             .sheet(isPresented: $settingsOpen) {
                 SettingsSheet(model: model)
                     .presentationDetents([.medium, .large])
-                    .presentationBackgroundInteraction(.enabled(upThrough: .medium))  // keep tuning while adjusting
             }
             Strings(tuning: model.tuning, active: model.activeString, play: model.play)
                 .padding(.top, 12)

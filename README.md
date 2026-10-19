@@ -96,7 +96,7 @@ graphify hook install
 git config merge.graphify-report.driver true
 ```
 
-`.gitattributes` sends `graph.json` through graphify's union merge driver and keeps one side of `GRAPH_REPORT.md`, which the post-merge hook then regenerates. GitHub's own conflict check doesn't run custom merge drivers, so merge `develop` into a branch locally if a PR shows a conflict on these files.
+`.gitattributes` sends `graph.json` through graphify's union merge driver and keeps one side of `GRAPH_REPORT.md`, which the post-merge hook then regenerates. GitHub doesn't run custom merge drivers, so `.github/workflows/graph-conflicts.yml` does it for pull requests: whenever `develop` or a PR branch moves, it merges the base into every open PR that conflicts only on these files (`scripts/resolve-graph-conflicts.sh`), rebuilds the graph and pushes. Conflicts in any other file are left for you. That push doesn't rerun Lint.
 
 ## Releasing
 

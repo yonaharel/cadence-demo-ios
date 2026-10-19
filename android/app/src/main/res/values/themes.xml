@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Only what shows before Compose draws; the app's colours are in ui/theme/Theme.kt. -->
+    <style name="Theme.Twang" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>

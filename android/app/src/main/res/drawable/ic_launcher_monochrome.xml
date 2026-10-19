@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A tuner dial with an in-tune needle, like the iOS icon. Generated: ticks every 7° on a 30dp arc. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path android:fillColor="#66FFFFFF" android:pathData="M50.94,44.21L57.06,44.21L58.31,35.30L49.69,35.30Z" />
+    <path android:strokeColor="#FFFFFFFF" android:strokeWidth="1.6" android:strokeLineCap="round" android:pathData="M30.83,54.20L27.27,52.38M32.45,51.46L29.13,49.22M34.38,48.94L31.36,46.32M36.60,46.68L33.93,43.71M41.79,43.04L39.92,39.51M44.68,41.73L43.25,37.99M47.71,40.77L46.74,36.89M50.83,40.19L50.34,36.22M57.17,40.19L57.66,36.22M60.29,40.77L61.26,36.89M63.32,41.73L64.75,37.99M66.21,43.04L68.08,39.51M71.40,46.68L74.07,43.71M73.62,48.94L76.64,46.32M75.55,51.46L78.87,49.22M77.17,54.20L80.73,52.38" />
+    <path android:strokeColor="#FFFFFFFF" android:strokeWidth="2.6" android:strokeLineCap="round" android:pathData="M32.39,58.13L25.81,55.74M40.81,47.16L36.79,41.43M54.00,43.00L54.00,36.00M67.19,47.16L71.21,41.43M75.61,58.13L82.19,55.74" />
+    <path android:strokeColor="#FFFFFFFF" android:strokeWidth="3.2" android:strokeLineCap="round" android:pathData="M54.00,66.00L52.59,39.04" />
+    <path android:fillColor="#FFFFFFFF" android:pathData="M49.00,66.00a5,5 0,1 0,10,0a5,5 0,1 0,-10,0Z" />
+</vector>

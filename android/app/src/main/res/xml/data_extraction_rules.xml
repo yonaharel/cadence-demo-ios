@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Settings (tuning, A4, sensitivity) are small and worth keeping on a new phone; there's nothing else to back up. -->
+<data-extraction-rules>
+    <cloud-backup>
+        <include domain="file" path="datastore/settings.preferences_pb" />
+    </cloud-backup>
+    <device-transfer>
+        <include domain="file" path="datastore/settings.preferences_pb" />
+    </device-transfer>
+</data-extraction-rules>

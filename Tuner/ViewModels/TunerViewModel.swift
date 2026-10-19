@@ -20,8 +20,10 @@ final class TunerViewModel {
         // Apply the saved settings now: the loops below only get their first value on the next main-actor turn.
         apply(a4: a4)
         apply(sensitivity: sensitivity)
+        let tuningChanges = $tuning.publisher.values
         let a4Changes = $a4.publisher.values
         let sensitivityChanges = $sensitivity.publisher.values
+        Task { [weak self] in for await _ in tuningChanges { self?.applyDetectionFloor() } }
         Task { [weak self] in for await a4 in a4Changes { self?.apply(a4: a4) } }
         Task { [weak self] in for await sensitivity in sensitivityChanges { self?.apply(sensitivity: sensitivity) } }
     }
@@ -35,7 +37,9 @@ final class TunerViewModel {
 
     /// The string being tuned, while one is ringing.
     var activeString: Int? { hearing ? note?.nearestString(in: tuning) : nil }
-    var summary: String { "\(tuning.name) · A4 \(a4)" }
+    /// "Drop D", or "Ukulele Standard" for anything but a guitar.
+    var tuningDescription: String { tuning.instrument == .guitar ? tuning.name : "\(tuning.instrument.name) \(tuning.name)" }
+    var summary: String { "\(tuningDescription) · A4 \(a4)" }
     /// The mic level the tuner starts listening at, for the sensitivity meter.
     var listeningLevel: Float { minimumLevel(sensitivity: Float(sensitivity)) }
 
@@ -48,7 +52,11 @@ final class TunerViewModel {
         let hz = Double(min(max(a4, 415), 466))
         listener.a4 = hz
         tone.a4 = hz
+        applyDetectionFloor()
     }
+
+    /// Low enough for the tuning's lowest string at the current A4.
+    private func applyDetectionFloor() { listener.detectionFloor = tuning.detectionFloor(a4: listener.a4) }
 
     private func apply(sensitivity: Double) { listener.sensitivity = Float(min(max(sensitivity, 0), 1)) }
 }

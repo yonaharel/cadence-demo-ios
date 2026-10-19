@@ -1,8 +1,8 @@
 # Twang
 
-A guitar tuner for iPhone. Play a string and Twang shows the note, how many cents sharp or flat it is, and which way to turn the peg.
+A tuner for guitar and other string instruments on iPhone. Play a string and Twang shows the note, how many cents sharp or flat it is, and which way to turn the peg.
 
-- 14 tunings, picked from swipeable cards that show each tuning's strings
+- Guitar, 7-string, 12-string, ukulele, mandolin and banjo, with 29 tunings picked from swipeable cards that show each tuning's strings
 - Reference pitch (A4) from 415 to 466 Hz on a snapping ruler, with a reset to 440
 - Holds steady in noisy rooms: the mic is filtered to guitar range, unclear readings are ignored, and stray jumps are held back
 - Adjustable sensitivity, with a live mic meter, from "loud room" to "quiet strings"
@@ -47,7 +47,7 @@ The app follows MVVM.
 ```
 Tuner/
   App/          TunerApp: entry point; owns the one TunerViewModel
-  Models/       Note, Tuning
+  Models/       Note, Tuning, Instrument
   Services/     PitchListener (mic → note), ReferenceTone (plucked tone)
     Pitch/      PitchDetection (YIN), BandPass, Smoother: pure signal processing
   ViewModels/   TunerViewModel: saved settings, live reading, actions
@@ -83,6 +83,20 @@ make format
 ```
 
 Pull requests run `make lint` (`.github/workflows/lint.yml`), and so does the release build.
+
+## Knowledge graph
+
+`graphify-out/graph.json` and `GRAPH_REPORT.md` are committed so Claude can query the codebase. Set up once per clone, so the hooks keep the graph fresh and merges don't conflict on it:
+
+```bash
+graphify hook install
+```
+
+```bash
+git config merge.graphify-report.driver true
+```
+
+`.gitattributes` sends `graph.json` through graphify's union merge driver and keeps one side of `GRAPH_REPORT.md`, which the post-merge hook then regenerates. GitHub's own conflict check doesn't run custom merge drivers, so merge `develop` into a branch locally if a PR shows a conflict on these files.
 
 ## Releasing
 

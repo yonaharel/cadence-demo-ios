@@ -3,6 +3,10 @@ options:
   bundleIdPrefix: com.yonaharel
   deploymentTarget:
     iOS: "17.0"
+packages:
+  Sharing:
+    url: https://github.com/pointfreeco/swift-sharing
+    from: 2.10.0
 configFiles:
   Debug: Config/Version.xcconfig
   Release: Config/Version.xcconfig
@@ -10,15 +14,19 @@ targets:
   Tuner:
     type: application
     platform: iOS
-    sources: [Tuner]
+    sources:
+      - path: Tuner
+        type: syncedFolder # Xcode buildable folder: new files are picked up without editing the project
+    dependencies:
+      - package: Sharing
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.yonaharel.cadencedemo
         DEVELOPMENT_TEAM: T783FPJSM6
         CODE_SIGN_STYLE: Automatic
         GENERATE_INFOPLIST_FILE: YES
-        INFOPLIST_KEY_CFBundleDisplayName: Tuner
-        INFOPLIST_KEY_NSMicrophoneUsageDescription: "Tuner listens to your guitar to show which note you are playing. Audio is analysed on your iPhone and never recorded or sent anywhere."
+        INFOPLIST_KEY_CFBundleDisplayName: Twang
+        INFOPLIST_KEY_NSMicrophoneUsageDescription: "Twang listens to your guitar to show which note you are playing. Audio is analysed on your iPhone and never recorded or sent anywhere."
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
         INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: NO

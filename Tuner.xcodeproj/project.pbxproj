@@ -7,20 +7,36 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		399E7C9EE38C19AAD9518183 /* Tuner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7008CB354617DFB7EC138EA /* Tuner.swift */; };
-		D3F5E05A12265A9F6B492D35 /* Pitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BC4F30F89DA9DD3C180E36 /* Pitch.swift */; };
-		D9FACAB45D0EE5408F9932E6 /* TunerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D957FD4530387BB10373FFC8 /* TunerApp.swift */; };
-		DC9DD0CC314BE54737608192 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97EC35051D44F87E0B052EB6 /* Assets.xcassets */; };
+		E2C25FE07B8B83A4CC6A99CA /* Sharing in Frameworks */ = {isa = PBXBuildFile; productRef = A5A991E909F977904768FC5B /* Sharing */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		82BC4F30F89DA9DD3C180E36 /* Pitch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pitch.swift; sourceTree = "<group>"; };
-		97EC35051D44F87E0B052EB6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		C7008CB354617DFB7EC138EA /* Tuner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tuner.swift; sourceTree = "<group>"; };
 		CB8D4A34D444B416B0F0FB2F /* Version.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
-		D957FD4530387BB10373FFC8 /* TunerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TunerApp.swift; sourceTree = "<group>"; };
 		FD414E3FDE1B48E6636CC07D /* Tuner.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Tuner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		6DB8BBAA8927BB2346C19D52 /* Tuner */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = Tuner;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A0551F80F9934ECE1B2CC941 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E2C25FE07B8B83A4CC6A99CA /* Sharing in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		3601859247CF76A52E30E95A /* Products */ = {
@@ -35,20 +51,9 @@
 			isa = PBXGroup;
 			children = (
 				A0BFBC6989E549E9BAC5EF89 /* Config */,
-				5E915968260877E3C7B552D6 /* Tuner */,
+				6DB8BBAA8927BB2346C19D52 /* Tuner */,
 				3601859247CF76A52E30E95A /* Products */,
 			);
-			sourceTree = "<group>";
-		};
-		5E915968260877E3C7B552D6 /* Tuner */ = {
-			isa = PBXGroup;
-			children = (
-				97EC35051D44F87E0B052EB6 /* Assets.xcassets */,
-				82BC4F30F89DA9DD3C180E36 /* Pitch.swift */,
-				C7008CB354617DFB7EC138EA /* Tuner.swift */,
-				D957FD4530387BB10373FFC8 /* TunerApp.swift */,
-			);
-			path = Tuner;
 			sourceTree = "<group>";
 		};
 		A0BFBC6989E549E9BAC5EF89 /* Config */ = {
@@ -68,13 +73,18 @@
 			buildPhases = (
 				F8F928AC0CB6F5F5C3552B27 /* Sources */,
 				4C198FD8C5371D5CD3504D1F /* Resources */,
+				A0551F80F9934ECE1B2CC941 /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
+			fileSystemSynchronizedGroups = (
+				6DB8BBAA8927BB2346C19D52 /* Tuner */,
+			);
 			name = Tuner;
 			packageProductDependencies = (
+				A5A991E909F977904768FC5B /* Sharing */,
 			);
 			productName = Tuner;
 			productReference = FD414E3FDE1B48E6636CC07D /* Tuner.app */;
@@ -104,6 +114,9 @@
 			);
 			mainGroup = 5E21A3E0FCAED9605AF18AA9;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				E41A68A66577BFB8720988A3 /* XCRemoteSwiftPackageReference "swift-sharing" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3601859247CF76A52E30E95A /* Products */;
 			projectDirPath = "";
@@ -119,7 +132,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DC9DD0CC314BE54737608192 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -130,9 +142,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D3F5E05A12265A9F6B492D35 /* Pitch.swift in Sources */,
-				399E7C9EE38C19AAD9518183 /* Tuner.swift in Sources */,
-				D9FACAB45D0EE5408F9932E6 /* TunerApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -268,9 +277,9 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = T783FPJSM6;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = Tuner;
+				INFOPLIST_KEY_CFBundleDisplayName = Twang;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Tuner listens to your guitar to show which note you are playing. Audio is analysed on your iPhone and never recorded or sent anywhere.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Twang listens to your guitar to show which note you are playing. Audio is analysed on your iPhone and never recorded or sent anywhere.";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -292,9 +301,9 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = T783FPJSM6;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = Tuner;
+				INFOPLIST_KEY_CFBundleDisplayName = Twang;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Tuner listens to your guitar to show which note you are playing. Audio is analysed on your iPhone and never recorded or sent anywhere.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Twang listens to your guitar to show which note you are playing. Audio is analysed on your iPhone and never recorded or sent anywhere.";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -330,6 +339,25 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		E41A68A66577BFB8720988A3 /* XCRemoteSwiftPackageReference "swift-sharing" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-sharing";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.10.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A5A991E909F977904768FC5B /* Sharing */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E41A68A66577BFB8720988A3 /* XCRemoteSwiftPackageReference "swift-sharing" */;
+			productName = Sharing;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 206B861CF0CD8D48309338DC /* Project object */;
 }

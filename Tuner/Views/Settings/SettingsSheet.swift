@@ -1,12 +1,15 @@
 import Sharing
 import SwiftUI
 
-/// Tuning, reference pitch and sensitivity, in a sheet the tuner keeps listening behind (glass on iOS 26).
+/// Instrument, tuning, reference pitch and sensitivity, in a sheet the tuner keeps listening behind (glass on iOS 26).
 struct SettingsSheet: View {
     let model: TunerViewModel
 
     var body: some View {
         Form {
+            Section("Instrument") {
+                InstrumentPicker(tuning: Binding(model.$tuning)).listRowInsets(EdgeInsets())
+            }
             Section("Tuning") {
                 TuningCards(tuning: Binding(model.$tuning)).listRowInsets(EdgeInsets())
             }

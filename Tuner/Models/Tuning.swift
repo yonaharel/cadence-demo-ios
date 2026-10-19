@@ -1,34 +1,65 @@
 import Foundation
 
-/// Six-string guitar tunings. The raw value is what's saved, so don't rename cases.
+/// Tunings for every instrument. The raw value is what's saved, so don't rename cases.
 enum Tuning: String, CaseIterable, Identifiable {
+    // Guitar
     case standard, halfStepDown, wholeStepDown, cStandard
     case dropD, dropCSharp, dropC, doubleDropD
     case openD, openE, openG, openA, openC
     case dadgad
+    // 7-string guitar
+    case sevenStandard, sevenDropA, sevenHalfStepDown
+    // 12-string guitar
+    case twelveStandard, twelveDropD, twelveHalfStepDown
+    // Ukulele
+    case ukuleleStandard, ukuleleLowG, ukuleleBaritone, ukuleleD
+    // Mandolin
+    case mandolinStandard
+    // 5-string banjo
+    case banjoOpenG, banjoDoubleC, banjoOpenD, banjoC
 
     var id: Self { self }
 
-    var name: String {
+    var instrument: Instrument {
         switch self {
-        case .standard: "Standard"
-        case .halfStepDown: "Half step down"
-        case .wholeStepDown: "Whole step down"
-        case .cStandard: "C Standard"
-        case .dropD: "Drop D"
-        case .dropCSharp: "Drop C♯"
-        case .dropC: "Drop C"
-        case .doubleDropD: "Double Drop D"
-        case .openD: "Open D"
-        case .openE: "Open E"
-        case .openG: "Open G"
-        case .openA: "Open A"
-        case .openC: "Open C"
-        case .dadgad: "DADGAD"
+        case .standard, .halfStepDown, .wholeStepDown, .cStandard, .dropD, .dropCSharp, .dropC, .doubleDropD,
+            .openD, .openE, .openG, .openA, .openC, .dadgad:
+            .guitar
+        case .sevenStandard, .sevenDropA, .sevenHalfStepDown: .sevenString
+        case .twelveStandard, .twelveDropD, .twelveHalfStepDown: .twelveString
+        case .ukuleleStandard, .ukuleleLowG, .ukuleleBaritone, .ukuleleD: .ukulele
+        case .mandolinStandard: .mandolin
+        case .banjoOpenG, .banjoDoubleC, .banjoOpenD, .banjoC: .banjo
         }
     }
 
-    /// Low string to high, as MIDI note numbers.
+    var name: String {
+        switch self {
+        case .standard, .sevenStandard, .twelveStandard, .ukuleleStandard, .mandolinStandard: "Standard"
+        case .halfStepDown, .sevenHalfStepDown, .twelveHalfStepDown: "Half step down"
+        case .wholeStepDown: "Whole step down"
+        case .cStandard: "C Standard"
+        case .dropD, .twelveDropD: "Drop D"
+        case .dropCSharp: "Drop C♯"
+        case .dropC: "Drop C"
+        case .doubleDropD: "Double Drop D"
+        case .openD, .banjoOpenD: "Open D"
+        case .openE: "Open E"
+        case .openG, .banjoOpenG: "Open G"
+        case .openA: "Open A"
+        case .openC: "Open C"
+        case .dadgad: "DADGAD"
+        case .sevenDropA: "Drop A"
+        case .ukuleleLowG: "Low G"
+        case .ukuleleBaritone: "Baritone"
+        case .ukuleleD: "D tuning"
+        case .banjoDoubleC: "Double C"
+        case .banjoC: "C tuning"
+        }
+    }
+
+    /// The strings as MIDI note numbers, in the order they're shown: low to high, except that a ukulele's high G
+    /// and a banjo's short drone string keep their place on the neck. A 12-string or mandolin lists one note per pair.
     var strings: [Int] {
         switch self {
         case .standard: [40, 45, 50, 55, 59, 64]  // E A D G B E
@@ -45,6 +76,33 @@ enum Tuning: String, CaseIterable, Identifiable {
         case .openA: [40, 45, 52, 57, 61, 64]  // E A E A C♯ E
         case .openC: [36, 43, 48, 55, 60, 64]  // C G C G C E
         case .dadgad: [38, 45, 50, 55, 57, 62]  // D A D G A D
+        case .sevenStandard: [35, 40, 45, 50, 55, 59, 64]  // B E A D G B E
+        case .sevenDropA: [33, 40, 45, 50, 55, 59, 64]  // A E A D G B E
+        case .sevenHalfStepDown: [34, 39, 44, 49, 54, 58, 63]  // B♭ E♭ A♭ D♭ G♭ B♭ E♭
+        case .twelveStandard: [40, 45, 50, 55, 59, 64]  // E A D G B E
+        case .twelveDropD: [38, 45, 50, 55, 59, 64]  // D A D G B E
+        case .twelveHalfStepDown: [39, 44, 49, 54, 58, 63]  // E♭ A♭ D♭ G♭ B♭ E♭
+        case .ukuleleStandard: [67, 60, 64, 69]  // G C E A, high G
+        case .ukuleleLowG: [55, 60, 64, 69]  // G C E A, low G
+        case .ukuleleBaritone: [50, 55, 59, 64]  // D G B E
+        case .ukuleleD: [69, 62, 66, 71]  // A D F♯ B
+        case .mandolinStandard: [55, 62, 69, 76]  // G D A E
+        case .banjoOpenG: [67, 50, 55, 59, 62]  // G D G B D
+        case .banjoDoubleC: [67, 48, 55, 60, 62]  // G C G C D
+        case .banjoOpenD: [66, 50, 54, 57, 62]  // F♯ D F♯ A D
+        case .banjoC: [67, 48, 55, 59, 62]  // G C G B D
         }
+    }
+
+    /// The octave string paired with `string` on a 12-string: the four lowest pairs have one; the top two are in unison.
+    func octaveString(of string: Int) -> Int? {
+        guard instrument == .twelveString, let index = strings.firstIndex(of: string), index < 4 else { return nil }
+        return string + 12
+    }
+
+    /// The lowest pitch worth listening for: just below the lowest string, so a slack string still registers,
+    /// but never above 60 Hz, so guitars keep ignoring 50 Hz mains hum.
+    func detectionFloor(a4: Double) -> Double {
+        min(60, Note(midi: strings.min()!, a4: a4).frequency * 0.85)
     }
 }

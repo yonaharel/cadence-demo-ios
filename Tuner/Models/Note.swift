@@ -19,6 +19,12 @@ struct Note: Equatable {
 
     var name: String { Note.names[((midi % 12) + 12) % 12] }
     var octave: Int { midi / 12 - 1 }
-    /// The string of `tuning` this note is closest to.
-    func nearestString(in tuning: Tuning) -> Int { tuning.strings.min { abs($0 - midi) < abs($1 - midi) }! }
+    /// The string (or pair of strings) of `tuning` this note is closest to; a 12-string's octave strings count for their pair.
+    func nearestString(in tuning: Tuning) -> Int {
+        func distance(to string: Int) -> Int {
+            let octave = tuning.octaveString(of: string).map { abs($0 - midi) } ?? .max
+            return min(abs(string - midi), octave)
+        }
+        return tuning.strings.min { distance(to: $0) < distance(to: $1) }!
+    }
 }

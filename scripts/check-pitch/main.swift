@@ -11,11 +11,13 @@ func tone(_ f: Double, count: Int = 4096) -> [Float] {
     }
 }
 
-for midi in Set(Tuning.allCases.flatMap(\.strings)).sorted() {
-    let f = Note(midi: midi).frequency
-    let heard = detectPitch(tone(f), sampleRate: rate)!
-    let note = Note(frequency: heard)
-    precondition(note.midi == midi && abs(note.cents) < 1, "string \(midi): heard \(heard) Hz")
+for t in Tuning.allCases {
+    for midi in t.strings {
+        let f = Note(midi: midi).frequency
+        let heard = detectPitch(tone(f), sampleRate: rate, range: t.detectionFloor(a4: 440)...1200)!
+        let note = Note(frequency: heard)
+        precondition(note.midi == midi && abs(note.cents) < 1, "\(t) string \(midi): heard \(heard) Hz")
+    }
 }
 let flat = Note(frequency: detectPitch(tone(108.9), sampleRate: rate)!)
 precondition(flat.name == "A" && flat.octave == 2 && (-19 ... -15).contains(flat.cents), "flat A2: \(flat)")
@@ -23,8 +25,19 @@ precondition(detectPitch([Float](repeating: 0, count: 4096), sampleRate: rate) =
 precondition(Note(frequency: 330).nearestString(in: .standard) == 64 && Note(frequency: 82).nearestString(in: .standard) == 40)
 precondition(Note(frequency: 73.4).nearestString(in: .dropD) == 38, "low D in Drop D")
 for t in Tuning.allCases {
-    precondition(t.strings.count == 6 && t.strings == t.strings.sorted() && Set(t.strings).count == 6, "\(t.name) strings")
+    let count = t.instrument.stringCount
+    let lowToHigh = [.guitar, .sevenString, .twelveString].contains(t.instrument)
+    precondition(t.strings.count == count && Set(t.strings).count == count, "\(t) strings")
+    precondition(!lowToHigh || t.strings == t.strings.sorted(), "\(t) strings run low to high")
 }
+for i in Instrument.allCases { precondition(!i.tunings.isEmpty, "\(i) has tunings") }
+// Guitars keep the 60 Hz floor (50 Hz mains hum stays out); a 7-string in Drop A listens lower.
+precondition(Tuning.standard.detectionFloor(a4: 440) == 60 && Tuning.dropC.detectionFloor(a4: 440) < 60)
+precondition(detectPitch(tone(50), sampleRate: rate, range: Tuning.standard.detectionFloor(a4: 440)...1200) == nil, "50 Hz hum ignored on guitar")
+// A 12-string's octave strings belong to their pair.
+precondition(Note(midi: 52).nearestString(in: .twelveStandard) == 40, "high E3 of the low E pair")
+precondition(Note(midi: 64).nearestString(in: .twelveStandard) == 64, "top E is in unison")
+precondition(Note(midi: 52).nearestString(in: .standard) == 50, "a 6-string has no octave pairs")
 for a4 in [432.0, 442.0] {
     for midi in Tuning.standard.strings {
         let f = Note(midi: midi, a4: a4).frequency
@@ -55,11 +68,16 @@ func filtered(_ f: Double, buffers: Int = 3, noiseAmp: Float = 0) -> [Float] {
     }
     return last
 }
-for midi in Set(Tuning.allCases.flatMap(\.strings)).sorted() {
-    let f = Note(midi: midi).frequency
-    let note = Note(frequency: detectPitch(filtered(f, buffers: 2), sampleRate: rate)!)
-    precondition(note.midi == midi && abs(note.cents) < 1, "filtered string \(midi): \(note)")
+for t in Tuning.allCases {
+    for midi in t.strings {
+        let f = Note(midi: midi).frequency
+        let note = Note(frequency: detectPitch(filtered(f, buffers: 2), sampleRate: rate, range: t.detectionFloor(a4: 440)...1200)!)
+        precondition(note.midi == midi && abs(note.cents) < 1, "\(t) filtered string \(midi): \(note)")
+    }
 }
+let lowA = Note(midi: 33, a4: 415)
+let heardLowA = detectPitch(filtered(lowA.frequency), sampleRate: rate, range: Tuning.sevenDropA.detectionFloor(a4: 415)...1200)
+precondition(heardLowA.map { Note(frequency: $0, a4: 415).midi } == 33, "7-string Drop A at A4=415 survives the high-pass")
 let lowC = Note(midi: 36, a4: 415)
 precondition(Note(frequency: detectPitch(filtered(lowC.frequency), sampleRate: rate)!, a4: 415).midi == 36, "C2 at A4=415 survives the high-pass")
 let noisyA = Note(frequency: detectPitch(filtered(110, noiseAmp: 0.3), sampleRate: rate)!)

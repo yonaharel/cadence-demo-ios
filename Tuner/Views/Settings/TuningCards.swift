@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Tuning cards to swipe through; each shows its strings so you can see what you're picking.
+/// The current instrument's tunings as cards to swipe through; each shows its strings so you can see what you're picking.
 struct TuningCards: View {
     @Binding var tuning: Tuning
 
@@ -8,7 +8,7 @@ struct TuningCards: View {
         ScrollViewReader { proxy in
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
-                    ForEach(Tuning.allCases) { t in
+                    ForEach(tuning.instrument.tunings) { t in
                         let notes = t.strings.map { Note(midi: $0).name }.joined(separator: " ")
                         Button {
                             tuning = t
@@ -31,6 +31,7 @@ struct TuningCards: View {
                 .padding(12)
             }
             .onAppear { proxy.scrollTo(tuning, anchor: .center) }
+            .onChange(of: tuning.instrument) { proxy.scrollTo(tuning, anchor: .leading) }
         }
         .sensoryFeedback(.selection, trigger: tuning)
     }

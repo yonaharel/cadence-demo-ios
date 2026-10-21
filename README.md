@@ -2,9 +2,9 @@
 
 A tuner for guitar and other string instruments on iPhone. Play a string and Twang shows the note, how many cents sharp or flat it is, and which way to turn the peg.
 
-- Guitar, 7-string, 12-string, ukulele, mandolin and banjo, with 29 tunings picked from swipeable cards that show each tuning's strings
+- Guitar, 7-string, 12-string, ukulele, mandolin, banjo and 4-, 5- and 6-string bass, with 34 tunings picked from swipeable cards that show each tuning's strings
 - Reference pitch (A4) from 415 to 466 Hz on a snapping ruler, with a reset to 440
-- Holds steady in noisy rooms: the mic is filtered to guitar range, unclear readings are ignored, and stray jumps are held back
+- Holds steady in noisy rooms: the mic is filtered to the instrument's range, unclear readings are ignored, and stray jumps are held back
 - Adjustable sensitivity, with a live mic meter, from "loud room" to "quiet strings"
 - A pitch history strip under the needle shows whether a note is holding or drifting
 - Tap a string to hear a plucked reference tone

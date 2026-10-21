@@ -17,6 +17,10 @@ enum Tuning: String, CaseIterable, Identifiable {
     case mandolinStandard
     // 5-string banjo
     case banjoOpenG, banjoDoubleC, banjoOpenD, banjoC
+    // Bass
+    case bassStandard, bassDropD, bassHalfStepDown
+    case fiveBassStandard
+    case sixBassStandard
 
     var id: Self { self }
 
@@ -30,16 +34,21 @@ enum Tuning: String, CaseIterable, Identifiable {
         case .ukuleleStandard, .ukuleleLowG, .ukuleleBaritone, .ukuleleD: .ukulele
         case .mandolinStandard: .mandolin
         case .banjoOpenG, .banjoDoubleC, .banjoOpenD, .banjoC: .banjo
+        case .bassStandard, .bassDropD, .bassHalfStepDown: .bass
+        case .fiveBassStandard: .fiveStringBass
+        case .sixBassStandard: .sixStringBass
         }
     }
 
     var name: String {
         switch self {
-        case .standard, .sevenStandard, .twelveStandard, .ukuleleStandard, .mandolinStandard: "Standard"
-        case .halfStepDown, .sevenHalfStepDown, .twelveHalfStepDown: "Half step down"
+        case .standard, .sevenStandard, .twelveStandard, .ukuleleStandard, .mandolinStandard, .bassStandard, .fiveBassStandard,
+            .sixBassStandard:
+            "Standard"
+        case .halfStepDown, .sevenHalfStepDown, .twelveHalfStepDown, .bassHalfStepDown: "Half step down"
         case .wholeStepDown: "Whole step down"
         case .cStandard: "C Standard"
-        case .dropD, .twelveDropD: "Drop D"
+        case .dropD, .twelveDropD, .bassDropD: "Drop D"
         case .dropCSharp: "Drop C♯"
         case .dropC: "Drop C"
         case .doubleDropD: "Double Drop D"
@@ -91,6 +100,11 @@ enum Tuning: String, CaseIterable, Identifiable {
         case .banjoDoubleC: [67, 48, 55, 60, 62]  // G C G C D
         case .banjoOpenD: [66, 50, 54, 57, 62]  // F♯ D F♯ A D
         case .banjoC: [67, 48, 55, 59, 62]  // G C G B D
+        case .bassStandard: [28, 33, 38, 43]  // E A D G
+        case .bassDropD: [26, 33, 38, 43]  // D A D G
+        case .bassHalfStepDown: [27, 32, 37, 42]  // E♭ A♭ D♭ G♭
+        case .fiveBassStandard: [23, 28, 33, 38, 43]  // B E A D G
+        case .sixBassStandard: [23, 28, 33, 38, 43, 48]  // B E A D G C
         }
     }
 
@@ -101,7 +115,7 @@ enum Tuning: String, CaseIterable, Identifiable {
     }
 
     /// The lowest pitch worth listening for: just below the lowest string, so a slack string still registers,
-    /// but never above 60 Hz, so guitars keep ignoring 50 Hz mains hum.
+    /// but never above 60 Hz, so guitars keep ignoring 50 Hz mains hum. A bass listens down to ~25 Hz (low B at A4=415).
     func detectionFloor(a4: Double) -> Double {
         min(60, Note(midi: strings.min()!, a4: a4).frequency * 0.85)
     }

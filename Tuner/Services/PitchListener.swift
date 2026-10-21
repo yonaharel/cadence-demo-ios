@@ -115,8 +115,9 @@ final class PitchListener {
         return { buffer, _ in
             guard let data = buffer.floatChannelData?[0] else { return }
             var samples = Array(UnsafeBufferPointer(start: data, count: Int(buffer.frameLength)))
-            filter.process(&samples)
             let range = floor.withLock { $0 }...1200
+            filter.low = min(55, range.lowerBound)  // under a bass's lowest string; guitars keep 55 Hz
+            filter.process(&samples)
             report(detectPitch(samples, sampleRate: sampleRate, range: range, sensitivity: sensitivity.withLock { $0 }), rms(samples))
         }
     }

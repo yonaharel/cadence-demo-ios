@@ -1,13 +1,16 @@
 import Foundation
 
-/// Cuts mic rumble below `low` and hiss above `high` (outside guitar range), which would otherwise confuse YIN. Keeps state between calls: one per audio stream.
+/// Cuts mic rumble below `low` and hiss above `high` (outside the instrument's range), which would otherwise confuse YIN. Keeps state between calls: one per audio stream.
 struct BandPass {
     private struct Biquad {
         var b0 = 0.0, b1 = 0.0, b2 = 0.0, a1 = 0.0, a2 = 0.0
         var x1 = 0.0, x2 = 0.0, y1 = 0.0, y2 = 0.0
 
-        // RBJ audio-EQ cookbook, Q = 1/√2 (Butterworth).
-        init(sampleRate: Double, cutoff: Double, highPass: Bool) {
+        init(sampleRate: Double, cutoff: Double, highPass: Bool) { setCutoff(cutoff, sampleRate: sampleRate, highPass: highPass) }
+
+        /// RBJ audio-EQ cookbook, Q = 1/√2 (Butterworth). Sets the coefficients only: the state carries over,
+        /// so moving the cutoff mid-stream doesn't click.
+        mutating func setCutoff(_ cutoff: Double, sampleRate: Double, highPass: Bool) {
             let w = 2 * Double.pi * cutoff / sampleRate
             let alpha = sin(w) / (2 * 0.7071)
             let c = cos(w)
@@ -30,8 +33,17 @@ struct BandPass {
     }
 
     private var highPass: Biquad, lowPass: Biquad
+    private let sampleRate: Double
+    /// The high-pass cutoff. Lower it for bass; it can change between buffers.
+    var low: Double {
+        didSet {
+            if low != oldValue { highPass.setCutoff(low, sampleRate: sampleRate, highPass: true) }
+        }
+    }
 
     init(sampleRate: Double, low: Double = 55, high: Double = 1300) {  // 55 Hz stays below C2 at A4=415 (61.7 Hz)
+        self.sampleRate = sampleRate
+        self.low = low
         highPass = Biquad(sampleRate: sampleRate, cutoff: low, highPass: true)
         lowPass = Biquad(sampleRate: sampleRate, cutoff: high, highPass: false)
     }

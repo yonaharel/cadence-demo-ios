@@ -3,7 +3,8 @@ import SwiftUI
 /// The tuner: your setup at the top, the strings, and the reading.
 struct TunerScreen: View {
     let model: TunerViewModel
-    @State private var settingsOpen = false
+    // App Store screenshots: launch with `-demoSettings YES` to open on the settings sheet.
+    @State private var settingsOpen = UserDefaults.standard.bool(forKey: "demoSettings")
     @Environment(\.scenePhase) private var phase
     private let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"
     private let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "?"

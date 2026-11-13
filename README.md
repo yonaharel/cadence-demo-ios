@@ -12,7 +12,7 @@ A tuner for guitar and other string instruments on iPhone. Play a string and Twa
 
 ## Requirements
 
-- Xcode 26 or later
+- Xcode 27.1 or later (the iPhone Duo fold layout uses the iOS 27.1 SDK; the app still runs on iOS 17)
 - iOS 17 or later; Liquid Glass styling on iOS 26
 - [XcodeGen](https://github.com/yonaskolb/XcodeGen) is only needed if you change `project.yml`: `brew install xcodegen`
 

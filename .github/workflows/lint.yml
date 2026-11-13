@@ -6,8 +6,10 @@ on:
 
 jobs:
   lint:
-    runs-on: macos-26
+    runs-on: xcode-27 # same swift-format as the Build workflow
     timeout-minutes: 10
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.1.app/Contents/Developer
     steps:
       - uses: actions/checkout@v5
       - run: make lint

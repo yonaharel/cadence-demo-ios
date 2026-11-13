@@ -14,9 +14,20 @@ struct Reading: View {
     }
 
     var body: some View {
-        VStack(spacing: 28) {
+        // Above the fold of a half-folded iPhone Duo there's only half a screen, so it tightens up rather than spill onto the crease.
+        ViewThatFits(in: .vertical) {
+            layout(noteSize: 120, spacing: 28)
+            layout(noteSize: 88, spacing: 12)
+        }
+        .opacity(hearing ? 1 : 0.45)
+        .animation(.easeOut(duration: 0.2), value: hearing)
+        .accessibilityElement(children: .combine)
+    }
+
+    private func layout(noteSize: CGFloat, spacing: CGFloat) -> some View {
+        VStack(spacing: spacing) {
             HStack(alignment: .firstTextBaseline, spacing: 2) {
-                Text(note?.name ?? "–").font(.system(size: 120, weight: .bold, design: .rounded))
+                Text(note?.name ?? "–").font(.system(size: noteSize, weight: .bold, design: .rounded))
                 if let note { Text("\(note.octave)").font(.system(size: 36, weight: .semibold, design: .rounded)).foregroundStyle(.secondary) }
             }
             .contentTransition(.numericText())
@@ -31,8 +42,5 @@ struct Reading: View {
                 }
             }
         }
-        .opacity(hearing ? 1 : 0.45)
-        .animation(.easeOut(duration: 0.2), value: hearing)
-        .accessibilityElement(children: .combine)
     }
 }

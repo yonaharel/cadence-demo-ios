@@ -26,7 +26,7 @@ precondition(Note(frequency: 330).nearestString(in: .standard) == 64 && Note(fre
 precondition(Note(frequency: 73.4).nearestString(in: .dropD) == 38, "low D in Drop D")
 for t in Tuning.allCases {
     let count = t.instrument.stringCount
-    let lowToHigh = [.guitar, .sevenString, .twelveString].contains(t.instrument)
+    let lowToHigh = ![.ukulele, .mandolin, .banjo].contains(t.instrument)
     precondition(t.strings.count == count && Set(t.strings).count == count, "\(t) strings")
     precondition(!lowToHigh || t.strings == t.strings.sorted(), "\(t) strings run low to high")
 }
@@ -53,9 +53,9 @@ func noise(_ count: Int, amplitude: Float) -> [Float] {
         return amplitude * (Float(seed >> 40) / Float(1 << 24) * 2 - 1)
     }
 }
-func filtered(_ f: Double, buffers: Int = 3, noiseAmp: Float = 0) -> [Float] {
+func filtered(_ f: Double, buffers: Int = 3, noiseAmp: Float = 0, floor: Double = 60) -> [Float] {
     // Several buffers through one filter, like the live tap; analyse the last.
-    var filter = BandPass(sampleRate: rate)
+    var filter = BandPass(sampleRate: rate, low: min(55, floor))
     var last: [Float] = []
     for b in 0..<buffers {
         var x = (0..<4096).map { i in
@@ -71,13 +71,28 @@ func filtered(_ f: Double, buffers: Int = 3, noiseAmp: Float = 0) -> [Float] {
 for t in Tuning.allCases {
     for midi in t.strings {
         let f = Note(midi: midi).frequency
-        let note = Note(frequency: detectPitch(filtered(f, buffers: 2), sampleRate: rate, range: t.detectionFloor(a4: 440)...1200)!)
+        let floor = t.detectionFloor(a4: 440)
+        let note = Note(frequency: detectPitch(filtered(f, buffers: 2, floor: floor), sampleRate: rate, range: floor...1200)!)
         precondition(note.midi == midi && abs(note.cents) < 1, "\(t) filtered string \(midi): \(note)")
     }
 }
 let lowA = Note(midi: 33, a4: 415)
-let heardLowA = detectPitch(filtered(lowA.frequency), sampleRate: rate, range: Tuning.sevenDropA.detectionFloor(a4: 415)...1200)
+let lowAFloor = Tuning.sevenDropA.detectionFloor(a4: 415)
+let heardLowA = detectPitch(filtered(lowA.frequency, floor: lowAFloor), sampleRate: rate, range: lowAFloor...1200)
 precondition(heardLowA.map { Note(frequency: $0, a4: 415).midi } == 33, "7-string Drop A at A4=415 survives the high-pass")
+// A 5- or 6-string bass's low B0 is ~29 Hz at A4=415: a 1650-sample period, under half the 4096-sample buffer.
+for t in [Tuning.fiveBassStandard, .sixBassStandard] {
+    let floor = t.detectionFloor(a4: 415)
+    for midi in t.strings {
+        let heard = detectPitch(filtered(Note(midi: midi, a4: 415).frequency, floor: floor), sampleRate: rate, range: floor...1200)
+        let note = heard.map { Note(frequency: $0, a4: 415) }
+        precondition(note?.midi == midi && abs(note!.cents) < 1, "\(t) at A4=415 string \(midi): \(String(describing: note))")
+    }
+}
+// A soft low B: a fixed 55 Hz high-pass would cut its fundamental and drop it under the level gate.
+let softB0 = filtered(Note(midi: 23).frequency, floor: Tuning.fiveBassStandard.detectionFloor(a4: 440)).map { $0 * 0.02 }
+precondition(detectPitch(softB0, sampleRate: rate, range: Tuning.fiveBassStandard.detectionFloor(a4: 440)...1200) != nil, "soft B0 heard on bass")
+precondition(detectPitch(filtered(50), sampleRate: rate, range: Tuning.standard.detectionFloor(a4: 440)...1200) == nil, "filtered 50 Hz hum ignored on guitar")
 let lowC = Note(midi: 36, a4: 415)
 precondition(Note(frequency: detectPitch(filtered(lowC.frequency), sampleRate: rate)!, a4: 415).midi == 36, "C2 at A4=415 survives the high-pass")
 let noisyA = Note(frequency: detectPitch(filtered(110, noiseAmp: 0.3), sampleRate: rate)!)

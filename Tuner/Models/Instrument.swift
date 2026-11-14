@@ -8,6 +8,9 @@ enum Instrument: String, CaseIterable, Identifiable {
     case ukulele
     case mandolin
     case banjo
+    case bass
+    case fiveStringBass
+    case sixStringBass
 
     var id: Self { self }
 
@@ -19,6 +22,9 @@ enum Instrument: String, CaseIterable, Identifiable {
         case .ukulele: "Ukulele"
         case .mandolin: "Mandolin"
         case .banjo: "Banjo"
+        case .bass: "Bass"
+        case .fiveStringBass: "5-string bass"
+        case .sixStringBass: "6-string bass"
         }
     }
 
@@ -28,10 +34,10 @@ enum Instrument: String, CaseIterable, Identifiable {
     /// How many buttons its tunings have: one per string, or per pair of strings on a 12-string or mandolin.
     var stringCount: Int {
         switch self {
-        case .guitar, .twelveString: 6
+        case .guitar, .twelveString, .sixStringBass: 6
         case .sevenString: 7
-        case .ukulele, .mandolin: 4
-        case .banjo: 5
+        case .ukulele, .mandolin, .bass: 4
+        case .banjo, .fiveStringBass: 5
         }
     }
 }

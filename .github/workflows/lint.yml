@@ -3,6 +3,12 @@ name: Lint
 
 on:
   pull_request:
+    # Only when code or the lint setup changes; docs and metadata PRs skip the macOS runner.
+    paths:
+      - "**.swift"
+      - .swift-format
+      - Makefile
+      - .github/workflows/lint.yml
 
 jobs:
   lint:

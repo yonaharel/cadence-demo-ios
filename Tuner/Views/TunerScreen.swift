@@ -4,7 +4,8 @@ import SwiftUI
 /// On the open iPhone Duo (regular in both directions) the settings sit beside it instead of in a sheet.
 struct TunerScreen: View {
     let model: TunerViewModel
-    @State private var settingsOpen = false
+    // App Store screenshots: launch with `-demoSettings YES` to open on the settings sheet.
+    @State private var settingsOpen = UserDefaults.standard.bool(forKey: "demoSettings")
     @Environment(\.scenePhase) private var phase
     @Environment(\.horizontalSizeClass) private var horizontal
     @Environment(\.verticalSizeClass) private var vertical
